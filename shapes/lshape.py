@@ -1,8 +1,8 @@
 from shape import Shape
+from unit import Unit
+
 
 class LShape(Shape):
-    def __init__(self,x,y):
-        super().__init__()
-        self.x = x
-        self.y = y
-        self.squares = [(x,y),(x,y+1),(x,y+2),(x+1,y+2)]
+    def __init__(self, start_row, start_col):
+        self.squares = [Unit(start_row, start_col), Unit(
+            start_row, start_col+1), Unit(start_row, start_col+2), Unit(start_row+1, start_col+2)]
