@@ -8,7 +8,7 @@ class Unit:
 
 
 class Shape:
-    def __init__(self, start_row: int, start_col: int, color = (0, 0, 0)) -> None:
+    def __init__(self, start_row: int, start_col: int, color=(0, 0, 0)) -> None:
         self.color: typing.Tuple(int, int, int) = color
         self.units: typing.List[Unit] = []
 
