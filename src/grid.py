@@ -9,6 +9,38 @@ class OccupiedPositionException(Exception):
     pass
 
 
+class TetrisGrid:
+    """TetrisGrid is a class that represents the grid of the game."""
+
+    def __init__(self, row: int, col: int) -> None:
+        self.__lock = threading.Lock()
+        self.__map: typing.List[typing.List[Unit]] = [
+            [None for _ in range(col)] for _ in range(row)]
+
+    def sync(self, virtual: typing.List[typing.List[Unit]]) -> None:
+        """sync synchronizes the virtual grid with the real grid.
+
+        Args:
+            virtual typing.List[typing.List[Unit]]: The virtual grid.
+        """
+        self.__lock.acquire()
+
+        for i in range(len(self.__map)):
+            for j in range(len(self.__map[i])):
+                self.__map[i][j] = virtual[i][j]
+
+        self.__lock.release()
+
+    def get_map(self) -> typing.Tuple[typing.Tuple[Unit]]:
+        """get_map returns the map of the grid as tuple."""
+        self.__lock.acquire()
+
+        grid = tuple(tuple(row) for row in self.__map)
+
+        self.__lock.release()
+        return grid
+
+
 class TetrisVirtualGrid:
     """TetrisVirtualGrid allows the computation of the next state of the grid
     After the computations are done, virtual grid is solidified and will update the actual grid
@@ -78,7 +110,7 @@ class TetrisVirtualGrid:
         self.__remove_shape(old)
 
         if not self.__is_shape_placeable(new):
-            self.__place_shape(old)  
+            self.__place_shape(old)
             self.lock.release()
             raise OccupiedPositionException()
 
