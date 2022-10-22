@@ -47,10 +47,11 @@ class TetrisVirtualGrid:
     """
 
     def __init__(self, row: int, col: int, sync) -> None:
-        self.lock = threading.Lock()
+        self.__lock = threading.Lock()
+        self.__sync = sync
+
         self.map: typing.List[typing.List[Unit]] = [
             [None for _ in range(col)] for _ in range(row)]
-        self.sync = sync
 
     def add_shape(self, shape: Shape):
         """Add a new shape to the grid.
@@ -61,10 +62,10 @@ class TetrisVirtualGrid:
         Raises:
             OccupiedPositionException: If the shape cannot be placed on the grid.
         """
-        self.lock.acquire()
+        self.__lock.acquire()
 
         if not self.__is_shape_placeable(shape):
-            self.lock.release()
+            self.__lock.release()
             raise OccupiedPositionException()
 
         self.__place_shape(shape)
@@ -81,13 +82,13 @@ class TetrisVirtualGrid:
         Raises:
             OccupiedPositionException: If the shape cannot be placed on the grid.
         """
-        self.lock.acquire()
+        self.__lock.acquire()
 
         self.__remove_shape(shape)
 
         if not self.__is_shape_placeable(shape, row, col):
             self.__place_shape(shape)
-            self.lock.release()
+            self.__lock.release()
             raise OccupiedPositionException()
 
         self.__place_shape(shape, row, col)
@@ -105,13 +106,13 @@ class TetrisVirtualGrid:
         Raises:
             OccupiedPositionException: If the new shape cannot be placed on the grid.
         """
-        self.lock.acquire()
+        self.__lock.acquire()
 
         self.__remove_shape(old)
 
         if not self.__is_shape_placeable(new):
             self.__place_shape(old)
-            self.lock.release()
+            self.__lock.release()
             raise OccupiedPositionException()
 
         self.__place_shape(new)
@@ -157,5 +158,5 @@ class TetrisVirtualGrid:
 
     def __solidify(self):
         """Solidify the current state of the virtual grid and release the lock"""
-        self.sync(self.map)
-        self.lock.release()
+        self.__sync(self.map)
+        self.__lock.release()
