@@ -1,6 +1,6 @@
 import threading
-from .shape import Shape
-from .shape import Unit
+from shape import Shape
+from shape import Unit
 
 import typing
 
