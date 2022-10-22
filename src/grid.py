@@ -18,6 +18,10 @@ class TetrisVirtualGrid:
     def add_shape(self, shape: Shape):
         self.lock.acquire()
 
+        if not self.__is_shape_placeable(shape):
+            self.lock.release()
+            raise OccupiedPositionException()
+
         for unit in shape.units:
             self.map[unit.row][unit.col] = unit
 
