@@ -13,10 +13,12 @@ class TetrisVirtualGrid:
     """TetrisVirtualGrid allows the computation of the next state of the grid
     After the computations are done, virtual grid is solidified and will update the actual grid
     """
-    def __init__(self, row: int, col: int) -> None:
+
+    def __init__(self, row: int, col: int, sync) -> None:
         self.lock = threading.Lock()
         self.map: typing.List[typing.List[Unit]] = [
             [None for _ in range(col)] for _ in range(row)]
+        self.sync = sync
 
     def add_shape(self, shape: Shape):
         """Add a new shape to the grid.
@@ -123,4 +125,5 @@ class TetrisVirtualGrid:
 
     def __solidify(self):
         """Solidify the current state of the virtual grid and release the lock"""
+        self.sync(self.map)
         self.lock.release()
