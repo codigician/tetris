@@ -10,6 +10,9 @@ class OccupiedPositionException(Exception):
 
 
 class TetrisVirtualGrid:
+    """TetrisVirtualGrid allows the computation of the next state of the grid
+    After the computations are done, virtual grid is solidified and will update the actual grid
+    """
     def __init__(self, row: int, col: int) -> None:
         self.lock = threading.Lock()
         self.map: typing.List[typing.List[Unit]] = [
