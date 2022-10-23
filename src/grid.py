@@ -130,6 +130,8 @@ class TetrisVirtualGrid:
             bool: Returns True if the shape can be placed on the grid, False otherwise.
         """
         for unit in shape.units:
+            if unit.row+row >= len(self.map) or unit.col+col >= len(self.map[0]) or unit.row + row < 0 or unit.col + col < 0:
+                return False
             if self.map[unit.row + row][unit.col + col] is not None:
                 return False
         return True
