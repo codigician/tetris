@@ -116,7 +116,7 @@ def test_replace_shape_given_new_shape_outbounds_of_grid():
 
 def test_replace_shape_given_shape_collides_with_another_shape():
     grid = TetrisVirtualGrid(5, 5, mock_sync)
-    shape_l = create_shape('L', 0, 1)
+    shape_l = create_shape('L', 0, 2)
     shape_z = create_shape('Z', 2, 0)
     shape_t = create_shape('T', 0, 1)
 

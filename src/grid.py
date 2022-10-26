@@ -1,5 +1,5 @@
 import threading
-from shape import Shape
+from shape import Shape, create_shape
 from shape import Unit
 
 import typing
