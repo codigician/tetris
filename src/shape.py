@@ -97,11 +97,6 @@ def create_shape(type: str, start_row: int, start_col: int) -> Shape:
     """
 
 
-# for row in range(5):
-#     for col in range(5):
-#         b[col][5-row] = a[row][col]
-
-
 def rotate(shape: Shape) -> Shape:
     unit_row_array = []
     unit_col_array = []
@@ -110,17 +105,17 @@ def rotate(shape: Shape) -> Shape:
         unit_col_array.append(unit.col)
     row_diff = max(unit_row_array) - min(unit_row_array) + 1
     col_diff = max(unit_col_array) - min(unit_col_array) + 1
-    min_row = min(unit_row_array)
-    min_col = min(unit_col_array)
+    min_value = min(min(unit_row_array), min(unit_col_array))
     dimension = max(row_diff, col_diff)
     grid = [[None for _ in range(dimension)] for _ in range(dimension)]
     second_grid = [[None for _ in range(dimension)] for _ in range(dimension)]
     for unit in shape.units:
-        grid[unit.row-min_row][unit.col-min_col] = unit
+        grid[unit.row-min_value][unit.col-min_value] = unit
 
     for row in range(len(grid)):
         for col in range(len(grid[row])):
             second_grid[col][len(grid)-1-row] = grid[row][col]
+
     """
             second[0][2]   grid[0][0]
             second[1][2]   grid[0][1]
@@ -130,22 +125,14 @@ def rotate(shape: Shape) -> Shape:
             second[1][1]   grid[1][1]
             second[2][0]   grid[1][2]
     """
-
-    rotated_shape = []
+    rotated_units = []
     for row in range(len(second_grid)):
         for col in range(len(second_grid[row])):
             if second_grid[row][col] != None:
-                rotated_shape.append(second_grid[row][col])
-    print(rotated_shape[0].row)
+                rotated_units.append(Unit(row + min_value, col + min_value))
 
-    for unit in shape.units:
-        idx = 0
-        unit.row = rotated_shape[idx].row
-        unit.col = rotated_shape[idx].col
-        idx += 1
+    shape.units = []
+    for unit in rotated_units:
+        shape.units.append(unit)
+
     return shape
-
-
-t = create_shape('T', 0, 0)
-
-print(rotate(t))

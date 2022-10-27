@@ -8,12 +8,12 @@ def test_I_shape():
 
     assert shape.units[0].row == 0
     assert shape.units[0].col == 0
-    assert shape.units[1].row == 0
-    assert shape.units[1].col == 1
-    assert shape.units[2].row == 0
-    assert shape.units[2].col == 2
-    assert shape.units[3].row == 0
-    assert shape.units[3].col == 3
+    assert shape.units[1].row == 1
+    assert shape.units[1].col == 0
+    assert shape.units[2].row == 2
+    assert shape.units[2].col == 0
+    assert shape.units[3].row == 3
+    assert shape.units[3].col == 0
 
 
 def test_L_shape():
@@ -73,10 +73,36 @@ def test_unknown_shape_raise_not_implemented_error():
         create_shape("X", 0, 0)
 
 
+def test_rotate_I_shape():
+    """
+   U - - -
+   U - - -
+   U - - -
+   U - - -
+
+    U U U U
+    - - - -
+    - - - -
+    - - - -
+    """
+
+    ı = create_shape('I', 0, 0)
+
+    ı_90 = rotate(ı)
+    assert ı_90.units[0].row == 0
+    assert ı_90.units[0].col == 0
+    assert ı_90.units[1].row == 0
+    assert ı_90.units[1].col == 1
+    assert ı_90.units[2].row == 0
+    assert ı_90.units[2].col == 2
+    assert ı_90.units[3].row == 0
+    assert ı_90.units[3].col == 3
+
+
 def test_rotate_L_shape():
     """
-    U - - 
-    U - - 
+    U - -
+    U - -
     U U -
 
     U U U
@@ -130,9 +156,21 @@ def test_rotate_T_shape():
     - U -
     - - -
 
+    - - U   (3,5), (4,4), (4,5), (5,5)
+    - U U   (0,2), (1,1), (1,2), (2,2)
     - - U
-    - U U
-    - - U
+
+    - - - - -
+    - - - - -
+    - - U U U
+    - - - U -
+    - - - - -
+
+    - - - - -
+    - - - - -
+    - - - - U
+    - - - U U
+    - - - - U
 
     - - -
     - U -
@@ -146,59 +184,33 @@ def test_rotate_T_shape():
     t = create_shape('T', 3, 3)
     t_90 = rotate(t)
     assert t_90.units[0].row == 3
-    assert t_90.units[0].col == 3
-    assert t_90.units[1].row == 3
+    assert t_90.units[0].col == 5
+    assert t_90.units[1].row == 4
     assert t_90.units[1].col == 4
-    assert t_90.units[2].row == 3
+    assert t_90.units[2].row == 4
     assert t_90.units[2].col == 5
-    assert t_90.units[3].row == 4
-    assert t_90.units[3].col == 4
+    assert t_90.units[3].row == 5
+    assert t_90.units[3].col == 5
 
     t_180 = rotate(t_90)
-    assert t_180.units[0].row == 3
-    assert t_180.units[0].col == 5
-    assert t_180.units[1].row == 4
-    assert t_180.units[1].col == 4
-    assert t_180.units[2].row == 4
-    assert t_180.units[2].col == 5
+    assert t_180.units[0].row == 4
+    assert t_180.units[0].col == 4
+    assert t_180.units[1].row == 5
+    assert t_180.units[1].col == 3
+    assert t_180.units[2].row == 5
+    assert t_180.units[2].col == 4
     assert t_180.units[3].row == 5
     assert t_180.units[3].col == 5
 
     t_270 = rotate(t_180)
-    assert t_270.units[0].row == 4
-    assert t_270.units[0].col == 4
-    assert t_270.units[1].row == 5
+    assert t_270.units[0].row == 3
+    assert t_270.units[0].col == 3
+    assert t_270.units[1].row == 4
     assert t_270.units[1].col == 3
-    assert t_270.units[2].row == 5
+    assert t_270.units[2].row == 4
     assert t_270.units[2].col == 4
     assert t_270.units[3].row == 5
-    assert t_270.units[3].col == 5
-
-
-def test_rotate_I_shape():
-    """
-   U - - -
-   U - - -
-   U - - -
-   U - - -
-
-    - - - -
-    U U U U
-    - - - -
-    - - - -
-    """
-
-    ı = create_shape('L', 0, 0)
-
-    ı_90 = rotate(ı)
-    assert ı_90.units[0].row == 1
-    assert ı_90.units[0].col == 0
-    assert ı_90.units[1].row == 1
-    assert ı_90.units[1].col == 1
-    assert ı_90.units[2].row == 1
-    assert ı_90.units[2].col == 2
-    assert ı_90.units[3].row == 1
-    assert ı_90.units[3].col == 3
+    assert t_270.units[3].col == 3
 
 
 def test_rotate_Z_shape():
@@ -222,7 +234,7 @@ def test_rotate_Z_shape():
     - - - - -
     - - - - U
     - - - U U
-    - - - U -    
+    - - - U -
     """
     z = create_shape('Z', 2, 2)
     z_90 = rotate(z)
