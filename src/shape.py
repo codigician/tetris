@@ -14,7 +14,7 @@ class Shape:
 
 
 class IShape(Shape):
-    def __init__(self, start_row: int, start_col: int) -> None:
+    def __init__(self, start_row: int, start_col: int, color=(0, 0, 0)) -> None:
         self.units = [
             Unit(start_row, start_col),
             Unit(start_row + 1, start_col),
@@ -22,9 +22,11 @@ class IShape(Shape):
             Unit(start_row+3, start_col),
         ]
 
+        self.color: typing.Tuple(int, int, int) = color
+
 
 class LShape(Shape):
-    def __init__(self, start_row: int, start_col: int) -> None:
+    def __init__(self, start_row: int, start_col: int, color=(0, 0, 0)) -> None:
         self.units = [
             Unit(start_row, start_col),
             Unit(start_row+1, start_col),
@@ -32,9 +34,11 @@ class LShape(Shape):
             Unit(start_row + 2, start_col + 1),
         ]
 
+        self.color: typing.Tuple(int, int, int) = color
+
 
 class TShape(Shape):
-    def __init__(self, start_row: int, start_col: int) -> None:
+    def __init__(self, start_row: int, start_col: int, color=(0, 0, 0)) -> None:
         self.units = [
             Unit(start_row, start_col),
             Unit(start_row, start_col + 1),
@@ -42,9 +46,11 @@ class TShape(Shape):
             Unit(start_row + 1, start_col + 1),
         ]
 
+        self.color: typing.Tuple(int, int, int) = color
+
 
 class ZShape(Shape):
-    def __init__(self, start_row: int, start_col: int) -> None:
+    def __init__(self, start_row: int, start_col: int, color=(0, 0, 0)) -> None:
         self.units = [
             Unit(start_row, start_col),
             Unit(start_row, start_col + 1),
@@ -52,9 +58,11 @@ class ZShape(Shape):
             Unit(start_row + 1, start_col + 2),
         ]
 
+        self.color: typing.Tuple(int, int, int) = color
+
 
 class SquareShape(Shape):
-    def __init__(self, start_row: int, start_col: int) -> None:
+    def __init__(self, start_row: int, start_col: int, color=(0, 0, 0)) -> None:
         self.units = [
             Unit(start_row, start_col),
             Unit(start_row, start_col + 1),
@@ -62,18 +70,20 @@ class SquareShape(Shape):
             Unit(start_row + 1, start_col + 1),
         ]
 
+        self.color: typing.Tuple(int, int, int) = color
 
-def create_shape(type: str, start_row: int, start_col: int) -> Shape:
+
+def create_shape(type: str, start_row: int, start_col: int, color=(0, 0, 0)) -> Shape:
     if type == "I":
-        return IShape(start_row, start_col)
+        return IShape(start_row, start_col, color)
     elif type == "L":
-        return LShape(start_row, start_col)
+        return LShape(start_row, start_col, color)
     elif type == "T":
-        return TShape(start_row, start_col)
+        return TShape(start_row, start_col, color)
     elif type == "Z":
-        return ZShape(start_row, start_col)
+        return ZShape(start_row, start_col, color)
     elif type == "S":
-        return SquareShape(start_row, start_col)
+        return SquareShape(start_row, start_col, color)
 
     raise NotImplementedError("Shape type not implemented")
 
