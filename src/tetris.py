@@ -46,10 +46,11 @@ class Tetris:
     def generate_random_shape(self) -> Shape:
         shapes = ['T', "Z", "L", "I", "Square"]
         colors = [red, blue, yellow, white]
+        
         shape_type = random.choices(shapes)
         shape_color = random.choices(colors)
-        shape = create_shape(shape_type, 0, 4, shape_color)
-        return shape
+        
+        return create_shape(shape_type, 0, 4, shape_color)
 
 
 if __name__ == "__main__":
