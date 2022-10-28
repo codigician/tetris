@@ -78,25 +78,6 @@ def create_shape(type: str, start_row: int, start_col: int) -> Shape:
     raise NotImplementedError("Shape type not implemented")
 
 
-"""
-    U - -
-    U - -
-    U U -
-
-    U U U
-    U - -
-    - - -
-
-    - U U
-    - - U
-    - - U
-
-    - - -
-    - - U
-    U U U
-    """
-
-
 def rotate(shape: Shape) -> Shape:
     unit_row_array = [unit.row for unit in shape.units]
     unit_col_array = [unit.col for unit in shape.units]
