@@ -79,8 +79,8 @@ def create_shape(type: str, start_row: int, start_col: int) -> Shape:
 
 
 """
-    U - - 
-    U - - 
+    U - -
+    U - -
     U U -
 
     U U U
@@ -98,43 +98,33 @@ def create_shape(type: str, start_row: int, start_col: int) -> Shape:
 
 
 def rotate(shape: Shape) -> Shape:
-    unit_row_array = []
-    unit_col_array = []
+    unit_row_array = [unit.row for unit in shape.units]
+    unit_col_array = [unit.col for unit in shape.units]
+    max_row, max_col = max(unit_row_array), max(unit_col_array)
+    min_row, min_col = min(unit_row_array), min(unit_col_array)
 
-    for unit in shape.units:
-        unit_row_array.append(unit.row)
-        unit_col_array.append(unit.col)
-
-    row_diff = max(unit_row_array) - min(unit_row_array) + 1
-    col_diff = max(unit_col_array) - min(unit_col_array) + 1
-    min_value = min(min(unit_row_array), min(unit_col_array))
+    row_diff = max_row - min_row + 1
+    col_diff = max_col - min_col + 1
+    min_value = min(min_row, min_col)
     dimension = max(row_diff, col_diff)
 
     grid = [[None for _ in range(dimension)] for _ in range(dimension)]
-    second_grid = [[None for _ in range(dimension)] for _ in range(dimension)]
+    rotated_grid = [[None for _ in range(dimension)]
+                    for _ in range(dimension)]
 
     for unit in shape.units:
         grid[unit.row-min_value][unit.col-min_value] = unit
 
     for row in range(len(grid)):
         for col in range(len(grid[row])):
-            second_grid[col][len(grid)-1-row] = grid[row][col]
+            rotated_grid[col][len(grid)-1-row] = grid[row][col]
 
-    """
-            second[0][2]   grid[0][0]
-            second[1][2]   grid[0][1]
-            second[2][2]   grid[0][2]
+    rotated_shape = Shape(0, 0)
 
-            second[0][1]   grid[1][0]
-            second[1][1]   grid[1][1]
-            second[2][0]   grid[1][2]
-    """
+    for row in range(len(rotated_grid)):
+        for col in range(len(rotated_grid[row])):
+            if rotated_grid[row][col]:
+                rotated_shape.units.append(
+                    Unit(row + min_value, col + min_value))
 
-    new_shape = Shape(0, 0)
-
-    for row in range(len(second_grid)):
-        for col in range(len(second_grid[row])):
-            if second_grid[row][col] != None:
-                new_shape.units.append(Unit(row + min_value, col + min_value))
-
-    return new_shape
+    return rotated_shape
