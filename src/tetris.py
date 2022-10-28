@@ -1,10 +1,10 @@
 from shape import Shape, create_shape
 import random
 
-red = (255, 0, 0)
-blue = (0, 0, 255)
-yellow = (255, 255, 0)
-white = (0, 0, 0)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
+WHITE = (0, 0, 0)
 
 
 class Tetris:
