@@ -1,7 +1,7 @@
-from grid import OccupiedPositionException
-from grid import TetrisVirtualGrid
-from shape import Unit
-from shape import create_shape
+from src.grid import OccupiedPositionException
+from src.grid import TetrisVirtualGrid
+from src.shape import Unit
+from src.shape import create_shape
 
 import pytest
 
