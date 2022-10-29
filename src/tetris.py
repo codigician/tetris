@@ -1,4 +1,5 @@
-from shape import Shape, create_shape
+from shape import Shape
+from shape import create_shape
 import random
 
 RED = (255, 0, 0)
@@ -43,14 +44,19 @@ class Tetris:
         """
         pass
 
+
+class RandomShapeGenerator:
+    def __init__(self, row: int, col: int) -> None:
+        self.row = row
+        self.col = col
+        self.shapes = ['T', "Z", "L", "I", "Square"]
+        self.colors = [RED, BLUE, YELLOW, WHITE]
+
     def generate_random_shape(self) -> Shape:
-        shapes = ['T', "Z", "L", "I", "Square"]
-        colors = [red, blue, yellow, white]
-        
-        shape_type = random.choices(shapes)
-        shape_color = random.choices(colors)
-        
-        return create_shape(shape_type, 0, 4, shape_color)
+        shape_type = random.choice(self.shapes)
+        shape_color = random.choice(self.colors)
+
+        return create_shape(shape_type, self.row, self.col, shape_color)
 
 
 if __name__ == "__main__":

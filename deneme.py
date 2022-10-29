@@ -1,4 +1,7 @@
-rotated_shape = []
+import random
 
+rotated_shape = ['T', 'Z']
 
-print(rotated_shape[0])
+x = random.choice(rotated_shape)
+
+print(x)
