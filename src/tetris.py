@@ -1,3 +1,4 @@
+from grid import TetrisGrid, TetrisVirtualGrid
 from shape import Shape
 from shape import create_shape
 import random
@@ -13,7 +14,10 @@ class Tetris:
         self.active_shape: Shape = None
         self.hold_shape: Shape = None
 
-        self.grid = None
+        self.grid = TetrisGrid(10, 10)
+        self.virtual_grid = TetrisVirtualGrid(10, 10, self.grid.sync)
+        self.shape_generator = RandomShapeGenerator(0, 4)
+
         self.score = 0
         self.level = 0
 
@@ -30,13 +34,37 @@ class Tetris:
         """
         pass
 
-    def move(self, direction: str) -> None:
-        """move the active shape in the given direction
-
-        Args:
-            direction (str): left, right, down, or rotate
+    def move_left(self):
+        """move the active shape left direction
         """
-        pass
+        try:
+            self.virtual_grid.relocate_shape(self.active_shape, 0, -1)
+        except:
+            pass
+
+    def move_right(self):
+        """move the active shape right direction
+        """
+        try:
+            self.virtual_grid.relocate_shape(self.active_shape, 0, 1)
+        except:
+            pass
+
+    def move_down(self):
+        """move the active shape down direction
+        """
+        try:
+            self.virtual_grid.relocate_shape(self.active_shape, 1, 0)
+        except:
+            self.active_shape = self.shape_generator.generate()
+
+    def move_ground(self):
+        """move the active shape to the ground 
+        """
+        try:
+            self.virtual_grid.relocate_shape(self.active_shape, 0, -1)
+        except:
+            return 'God damn Gosh'
 
     def hold(self) -> None:
         """hold the active shape
