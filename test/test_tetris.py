@@ -1,5 +1,5 @@
-from tetris import Tetris
-from tetris import RandomShapeGenerator
+from src.tetris import Tetris
+from src.tetris import RandomShapeGenerator
 
 
 def test_generate_random_shape_is_exist():
