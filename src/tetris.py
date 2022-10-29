@@ -52,7 +52,7 @@ class RandomShapeGenerator:
         self.shapes = ['T', "Z", "L", "I", "Square"]
         self.colors = [RED, BLUE, YELLOW, WHITE]
 
-    def generate_random_shape(self) -> Shape:
+    def generate(self) -> Shape:
         shape_type = random.choice(self.shapes)
         shape_color = random.choice(self.colors)
 
