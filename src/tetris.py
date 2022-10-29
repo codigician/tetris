@@ -1,4 +1,6 @@
-from grid import TetrisGrid, TetrisVirtualGrid
+from grid import OccupiedPositionException
+from grid import TetrisGrid
+from grid import TetrisVirtualGrid
 from shape import Shape
 from shape import create_shape
 import random
@@ -11,12 +13,12 @@ WHITE = (0, 0, 0)
 
 class Tetris:
     def __init__(self) -> None:
-        self.active_shape: Shape = None
-        self.hold_shape: Shape = None
-
         self.grid = TetrisGrid(10, 10)
         self.virtual_grid = TetrisVirtualGrid(10, 10, self.grid.sync)
         self.shape_generator = RandomShapeGenerator(0, 4)
+
+        self.active_shape: Shape = self.shape_generator.generate()
+        self.hold_shape: Shape = None
 
         self.score = 0
         self.level = 0
@@ -55,16 +57,19 @@ class Tetris:
         """
         try:
             self.virtual_grid.relocate_shape(self.active_shape, 1, 0)
-        except:
+        except OccupiedPositionException:
             self.active_shape = self.shape_generator.generate()
+            self.virtual_grid.add_shape(self.active_shape)
 
     def move_ground(self):
         """move the active shape to the ground 
         """
         try:
-            self.virtual_grid.relocate_shape(self.active_shape, 0, -1)
-        except:
-            return 'God damn Gosh'
+            while True:
+                self.virtual_grid.relocate_shape(self.active_shape, 1, 0)
+        except OccupiedPositionException:
+            self.active_shape = self.shape_generator.generate()
+            self.virtual_grid.add_shape(self.active_shape)
 
     def hold(self) -> None:
         """hold the active shape
@@ -77,7 +82,7 @@ class RandomShapeGenerator:
     def __init__(self, row: int, col: int) -> None:
         self.row = row
         self.col = col
-        self.shapes = ['T', "Z", "L", "I", "Square"]
+        self.shapes = ['T', "Z", "L", "I", "S"]
         self.colors = [RED, BLUE, YELLOW, WHITE]
 
     def generate(self) -> Shape:
