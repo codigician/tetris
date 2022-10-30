@@ -18,6 +18,7 @@ class Tetris:
         self.shape_generator = RandomShapeGenerator(0, 4)
 
         self.active_shape: Shape = self.shape_generator.generate()
+        self.next_active_shape: Shape = self.shape_generator.generate()
         self.hold_shape: Shape = None
 
         self.score = 0
@@ -75,7 +76,34 @@ class Tetris:
         """hold the active shape
         If there is already a held shape, swap them
         """
-        pass
+        try:
+            # hold_shape dolu mu boş mu ?
+            if self.hold_shape is None:
+                # hold_shape boşsa sıradaki şekli al gride koy
+                self.virtual_grid.replace_shape(
+                    self.active_shape, self.next_active_shape)
+
+                # hold_shape e active_shape i gönder
+                self.hold_shape = self.active_shape
+
+                # yeni active_shape next_active_shape oldu
+                self.active_shape = self.next_active_shape
+
+                # yeni next_active_shape oluşturuldu
+                self.next_active_shape = self.shape_generator.generate()
+            else:
+                # hold_sshape doluysa hold_shape i gride koy
+                self.virtual_grid.replace_shape(
+                    self.active_shape, self.hold_shape)
+
+                # hold_shape e active_shape i gönder
+                self.hold_shape = self.active_shape
+
+                # yeni active_shape hold_shape oldu
+                self.active_shape = self.hold_shape
+
+        except OccupiedPositionException:
+            pass
 
 
 class RandomShapeGenerator:
