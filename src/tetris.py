@@ -41,7 +41,7 @@ class Tetris:
         """
         try:
             self.virtual_grid.relocate_shape(self.active_shape, 0, -1)
-        except:
+        except OccupiedPositionException:
             pass
 
     def move_right(self):
@@ -49,7 +49,7 @@ class Tetris:
         """
         try:
             self.virtual_grid.relocate_shape(self.active_shape, 0, 1)
-        except:
+        except OccupiedPositionException:
             pass
 
     def move_down(self):
