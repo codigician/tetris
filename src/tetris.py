@@ -93,14 +93,14 @@ class Tetris:
                 self.next_active_shape = self.shape_generator.generate()
             else:
                 # hold_sshape doluysa hold_shape i gride koy
+                copy_active_shape = self.active_shape
+
                 self.virtual_grid.replace_shape(
                     self.active_shape, self.hold_shape)
 
-                # hold_shape e active_shape i gönder
-                self.hold_shape = self.active_shape
-
-                # yeni active_shape hold_shape oldu
                 self.active_shape = self.hold_shape
+
+                self.hold_shape = copy_active_shape
 
         except OccupiedPositionException:
             pass
@@ -118,6 +118,32 @@ class RandomShapeGenerator:
         shape_color = random.choice(self.colors)
 
         return create_shape(shape_type, self.row, self.col, shape_color)
+
+
+tetris = Tetris()
+
+print(type(tetris.active_shape))
+print(type(tetris.hold_shape))
+print(tetris.next_active_shape)
+tetris.hold()
+for i in tetris.virtual_grid.map:
+    print(i)
+print(type(tetris.active_shape))
+print(type(tetris.hold_shape))
+print(tetris.next_active_shape)
+tetris.hold()
+
+for i in tetris.virtual_grid.map:
+    print(i)
+print(type(tetris.hold_shape))
+tetris.hold()
+for i in tetris.virtual_grid.map:
+    print(i)
+print(type(tetris.hold_shape))
+tetris.hold()
+for i in tetris.virtual_grid.map:
+    print(i)
+print(type(tetris.hold_shape))
 
 
 if __name__ == "__main__":
