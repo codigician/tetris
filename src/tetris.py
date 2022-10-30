@@ -77,30 +77,11 @@ class Tetris:
         If there is already a held shape, swap them
         """
         try:
-            # hold_shape dolu mu boş mu ?
             if self.hold_shape is None:
-                # hold_shape boşsa sıradaki şekli al gride koy
-                self.virtual_grid.replace_shape(
-                    self.active_shape, self.next_active_shape)
-
-                # hold_shape e active_shape i gönder
-                self.hold_shape = self.active_shape
-
-                # yeni active_shape next_active_shape oldu
-                self.active_shape = self.next_active_shape
-
-                # yeni next_active_shape oluşturuldu
-                self.next_active_shape = self.shape_generator.generate()
-            else:
-                # hold_sshape doluysa hold_shape i gride koy
-                copy_active_shape = self.active_shape
-
-                self.virtual_grid.replace_shape(
-                    self.active_shape, self.hold_shape)
-
-                self.active_shape = self.hold_shape
-
-                self.hold_shape = copy_active_shape
+                self.hold_shape = self.shape_generator.generate()
+            
+            self.virtual_grid.replace_shape(self.active_shape, self.hold_shape)
+            self.active_shape, self.hold_shape = self.hold_shape, self.active_shape
 
         except OccupiedPositionException:
             pass
