@@ -5,6 +5,8 @@ from shape import Shape
 from shape import create_shape
 from shape import rotate
 
+import threading
+import time
 import random
 import typing
 
@@ -20,6 +22,7 @@ class Tetris:
         self.grid = TetrisGrid(10, 10)
         self.virtual_grid = TetrisVirtualGrid(10, 10, self.grid.sync)
         self.shape_generator = RandomShapeGenerator(0, 4)
+        self.gravity = Gravity(self.move_down)
 
         self.active_shape: Shape = None
         self.held_shape: Shape = None
@@ -36,9 +39,13 @@ class Tetris:
         self.active_shape: Shape = self.shape_generator.generate()
         self.virtual_grid.add_shape(self.active_shape)
 
+        self.playing = True
+        self.gravity.start()
+
     def gameover(self) -> None:
         """gameover ends the game, output the score and level"""
-        pass
+        self.gravity.gameover = True
+        self.playing = False
 
     def move_left(self):
         """move the active shape left direction"""
@@ -102,6 +109,20 @@ class Tetris:
             self.gameover()
 
 
+class Gravity(threading.Thread):
+    def __init__(self, move_down: typing.Callable) -> None:
+        super().__init__(None, None, 'Gravity', None, None, daemon=True)
+        
+        self.gameover = False
+        self.move_down = move_down
+        self.speed = 0.5
+    
+    def run(self) -> None:
+        while not self.gameover:
+            self.move_down()
+            time.sleep(self.speed)
+
+
 class RandomShapeGenerator:
     def __init__(self, row: int, col: int) -> None:
         self.row = row
@@ -131,24 +152,33 @@ def render(m, title=None):
 if __name__ == "__main__":
     tetris = Tetris()
     tetris.play()
-    render(tetris.grid.get_map())
-    tetris.move_down()
-    render(tetris.grid.get_map())
-    tetris.move_ground()
-    render(tetris.grid.get_map())
-    tetris.move_right()
-    render(tetris.grid.get_map())
-    tetris.hold()
-    render(tetris.grid.get_map(), "HOLD")
-    tetris.hold()
-    render(tetris.grid.get_map(), "HOLD")
-    tetris.hold()
-    render(tetris.grid.get_map(), "HOLD")
-    tetris.move_ground()
-    render(tetris.grid.get_map(), "GROUND")
-    tetris.hold()
-    render(tetris.grid.get_map(), "HOLD")
-    tetris.rotate()
-    render(tetris.grid.get_map(), "ROTATE")
-    tetris.move_right()
-    render(tetris.grid.get_map(), "RIGHT")
+
+    while tetris.playing:
+        render(tetris.grid.get_map())
+        time.sleep(0.1)
+    # time.sleep(2)
+    # render(tetris.grid.get_map())
+    # time.sleep(0.5)
+    # render(tetris.grid.get_map())
+    # time.sleep(3.5)
+    # render(tetris.grid.get_map())
+    # tetris.move_down()
+    # render(tetris.grid.get_map())
+    # tetris.move_ground()
+    # render(tetris.grid.get_map())
+    # tetris.move_right()
+    # render(tetris.grid.get_map())
+    # tetris.hold()
+    # render(tetris.grid.get_map(), "HOLD")
+    # tetris.hold()
+    # render(tetris.grid.get_map(), "HOLD")
+    # tetris.hold()
+    # render(tetris.grid.get_map(), "HOLD")
+    # tetris.move_ground()
+    # render(tetris.grid.get_map(), "GROUND")
+    # tetris.hold()
+    # render(tetris.grid.get_map(), "HOLD")
+    # tetris.rotate()
+    # render(tetris.grid.get_map(), "ROTATE")
+    # tetris.move_right()
+    # render(tetris.grid.get_map(), "RIGHT")
