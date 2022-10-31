@@ -19,6 +19,7 @@ class Tetris:
 
         self.active_shape: Shape = self.shape_generator.generate()
         self.held_shape: Shape = None
+        self.is_shape_exchanged = False
 
         self.score = 0
         self.level = 0
@@ -53,8 +54,7 @@ class Tetris:
         try:
             self.virtual_grid.relocate_shape(self.active_shape, 1, 0)
         except OccupiedPositionException:
-            self.active_shape = self.shape_generator.generate()
-            self.virtual_grid.add_shape(self.active_shape)
+            self.__add_new_shape()
 
     def move_ground(self):
         """move the active shape to the ground"""
@@ -62,11 +62,13 @@ class Tetris:
             while True:
                 self.virtual_grid.relocate_shape(self.active_shape, 1, 0)
         except OccupiedPositionException:
-            self.active_shape = self.shape_generator.generate()
-            self.virtual_grid.add_shape(self.active_shape)
+            self.__add_new_shape()
 
     def hold(self) -> None:
         """hold the active shape, If there is already a held shape, swap them"""
+        if self.is_shape_exchanged:
+            return
+
         try:
             # create tmp held shape variable to not set held shape when replace fails
             tmp_held_shape = self.held_shape
@@ -77,8 +79,14 @@ class Tetris:
 
             self.held_shape = tmp_held_shape
             self.active_shape, self.held_shape = self.held_shape, self.active_shape
+            self.is_shape_exchanged = True
         except OccupiedPositionException:
             pass
+
+    def __add_new_shape(self):
+        self.active_shape = self.shape_generator.generate()
+        self.virtual_grid.add_shape(self.active_shape)
+        self.is_shape_exchanged = False
 
 
 class RandomShapeGenerator:
@@ -93,7 +101,6 @@ class RandomShapeGenerator:
         shape_color = random.choice(self.colors)
 
         return create_shape(shape_type, self.row, self.col, shape_color)
-
 
 
 if __name__ == "__main__":
