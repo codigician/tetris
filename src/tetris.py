@@ -3,6 +3,7 @@ from grid import TetrisGrid
 from grid import TetrisVirtualGrid
 from shape import Shape
 from shape import create_shape
+from shape import rotate
 
 import random
 import typing
@@ -56,6 +57,15 @@ class Tetris:
         while self.__move(row=1, onfail=self.__add_new_shape):
             pass
 
+    def rotate(self):
+        """rotates the active shape in the grid"""
+        try:
+            rotated_shape = rotate(self.active_shape)
+            self.virtual_grid.replace_shape(self.active_shape, rotated_shape)
+            self.active_shape = rotated_shape
+        except OccupiedPositionException:
+            pass
+
     def hold(self) -> None:
         """hold the active shape, If there is already a held shape, swap them"""
         if self.is_shape_exchanged:
@@ -84,9 +94,12 @@ class Tetris:
             return False
 
     def __add_new_shape(self):
-        self.active_shape = self.shape_generator.generate()
-        self.virtual_grid.add_shape(self.active_shape)
-        self.is_shape_exchanged = False
+        try:
+            self.active_shape = self.shape_generator.generate()
+            self.virtual_grid.add_shape(self.active_shape)
+            self.is_shape_exchanged = False
+        except OccupiedPositionException:
+            self.gameover()
 
 
 class RandomShapeGenerator:
@@ -135,3 +148,7 @@ if __name__ == "__main__":
     render(tetris.grid.get_map(), "GROUND")
     tetris.hold()
     render(tetris.grid.get_map(), "HOLD")
+    tetris.rotate()
+    render(tetris.grid.get_map(), "ROTATE")
+    tetris.move_right()
+    render(tetris.grid.get_map(), "RIGHT")
