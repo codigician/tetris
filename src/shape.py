@@ -9,12 +9,30 @@ class Unit:
 
 class Shape:
     def __init__(self, start_row: int, start_col: int, color=(0, 0, 0)) -> None:
+        self.start_row = start_row
+        self.start_col = start_col
+
         self.color: typing.Tuple(int, int, int) = color
         self.units: typing.List[Unit] = []
+        self.grid: typing.List[typing.List[Unit]] = []
+
+    def __str__(self) -> str:
+        s = []
+        for row in self.grid:
+            for unit in row:
+                if unit:
+                    s.append('U ')
+                else:
+                    s.append('- ')
+            s.append('\n')
+        return "".join(s)
 
 
 class IShape(Shape):
     def __init__(self, start_row: int, start_col: int, color=(0, 0, 0)) -> None:
+        self.start_row = start_row
+        self.start_col = start_col
+
         self.units = [
             Unit(start_row, start_col),
             Unit(start_row + 1, start_col),
@@ -23,10 +41,17 @@ class IShape(Shape):
         ]
 
         self.color: typing.Tuple(int, int, int) = color
+        self.grid = [[None for _ in range(4)] for _ in range(4)]
+
+        for unit in self.units:
+            self.grid[unit.row - start_row][unit.col - start_col] = unit
 
 
 class LShape(Shape):
     def __init__(self, start_row: int, start_col: int, color=(0, 0, 0)) -> None:
+        self.start_row = start_row
+        self.start_col = start_col
+
         self.units = [
             Unit(start_row, start_col),
             Unit(start_row+1, start_col),
@@ -35,10 +60,17 @@ class LShape(Shape):
         ]
 
         self.color: typing.Tuple(int, int, int) = color
+        self.grid = [[None for _ in range(3)] for _ in range(3)]
+
+        for unit in self.units:
+            self.grid[unit.row - start_row][unit.col - start_col] = unit
 
 
 class TShape(Shape):
     def __init__(self, start_row: int, start_col: int, color=(0, 0, 0)) -> None:
+        self.start_row = start_row
+        self.start_col = start_col
+
         self.units = [
             Unit(start_row, start_col),
             Unit(start_row, start_col + 1),
@@ -47,10 +79,17 @@ class TShape(Shape):
         ]
 
         self.color: typing.Tuple(int, int, int) = color
+        self.grid = [[None for _ in range(3)] for _ in range(3)]
+
+        for unit in self.units:
+            self.grid[unit.row - start_row][unit.col - start_col] = unit
 
 
 class ZShape(Shape):
     def __init__(self, start_row: int, start_col: int, color=(0, 0, 0)) -> None:
+        self.start_row = start_row
+        self.start_col = start_col
+
         self.units = [
             Unit(start_row, start_col),
             Unit(start_row, start_col + 1),
@@ -59,10 +98,17 @@ class ZShape(Shape):
         ]
 
         self.color: typing.Tuple(int, int, int) = color
+        self.grid = [[None for _ in range(3)] for _ in range(3)]
+
+        for unit in self.units:
+            self.grid[unit.row - start_row][unit.col - start_col] = unit
 
 
 class SquareShape(Shape):
     def __init__(self, start_row: int, start_col: int, color=(0, 0, 0)) -> None:
+        self.start_row = start_row
+        self.start_col = start_col
+
         self.units = [
             Unit(start_row, start_col),
             Unit(start_row, start_col + 1),
@@ -71,6 +117,10 @@ class SquareShape(Shape):
         ]
 
         self.color: typing.Tuple(int, int, int) = color
+        self.grid = [[None for _ in range(2)] for _ in range(2)]
+
+        for unit in self.units:
+            self.grid[unit.row - start_row][unit.col - start_col] = unit
 
 
 def create_shape(type: str, start_row: int, start_col: int, color=(0, 0, 0)) -> Shape:
@@ -89,33 +139,26 @@ def create_shape(type: str, start_row: int, start_col: int, color=(0, 0, 0)) -> 
 
 
 def rotate(shape: Shape) -> Shape:
-    unit_row_array = [unit.row for unit in shape.units]
-    unit_col_array = [unit.col for unit in shape.units]
-    max_row, max_col = max(unit_row_array), max(unit_col_array)
-    min_row, min_col = min(unit_row_array), min(unit_col_array)
+    dimension = len(shape.grid)
 
-    row_diff = max_row - min_row + 1
-    col_diff = max_col - min_col + 1
-    min_value = min(min_row, min_col)
-    dimension = max(row_diff, col_diff)
+    rotated_grid = [[None for _ in range(dimension)] for _ in range(dimension)]
 
-    grid = [[None for _ in range(dimension)] for _ in range(dimension)]
-    rotated_grid = [[None for _ in range(dimension)]
-                    for _ in range(dimension)]
+    for row in range(dimension):
+        for col in range(dimension):
+            rotated_grid[col][dimension-1-row] = shape.grid[row][col]
 
-    for unit in shape.units:
-        grid[unit.row-min_value][unit.col-min_value] = unit
-
-    for row in range(len(grid)):
-        for col in range(len(grid[row])):
-            rotated_grid[col][len(grid)-1-row] = grid[row][col]
-
-    rotated_shape = Shape(0, 0)
-
-    for row in range(len(rotated_grid)):
-        for col in range(len(rotated_grid[row])):
+    units = []
+    for row in range(dimension):
+        for col in range(dimension):
             if rotated_grid[row][col]:
-                rotated_shape.units.append(
-                    Unit(row + min_value, col + min_value))
+                units.append(
+                    Unit(row + shape.start_row, col + shape.start_col))
 
+    rotated_shape = Shape(shape.start_row, shape.start_col)
+    rotated_shape.grid = rotated_grid
+    rotated_shape.units = units
+
+    # DEBUG: uncomment to see the rotation
+    # print('OLD_SHAPE\n%s\nROTATED_SHAPE\n%s' % (shape.__str__(), rotated_shape.__str__()))
+    # print(["{} {}".format(unit.row, unit.col) for unit in rotated_shape.units])
     return rotated_shape
