@@ -4,6 +4,7 @@ from grid import TetrisVirtualGrid
 from shape import Shape
 from shape import create_shape
 from shape import rotate
+from enum import Enum
 
 import threading
 import time
@@ -15,6 +16,11 @@ RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 WHITE = (0, 0, 0)
+
+class GameState(Enum):
+    PAUSE = 1
+    PLAYING = 2
+    GAMEOVER = 3
 
 
 class Tetris:
@@ -28,6 +34,7 @@ class Tetris:
         self.held_shape: Shape = None
         self.is_shape_exchanged = False
 
+        self.state: GameState = None
         self.score = 0
         self.level = 0
 
@@ -36,16 +43,29 @@ class Tetris:
         Initialize the grid and the active shape
         Start gravity thread to move the active shape down
         """
+        self.state = GameState.PLAYING
+
         self.active_shape: Shape = self.shape_generator.generate()
         self.virtual_grid.add_shape(self.active_shape)
 
-        self.playing = True
         self.gravity.start()
+    
+    def pause(self):
+        self.state = GameState.PAUSE
+
+        self.gravity.pause()
+    
+    def resume(self):
+        if self.state != GameState.PAUSE:
+            raise RuntimeError("resume only works if the game is paused")
+
+        self.state = GameState.PLAYING
+        self.gravity.resume()
 
     def gameover(self) -> None:
         """gameover ends the game, output the score and level"""
-        self.gravity.gameover = True
-        self.playing = False
+        self.state = GameState.GAMEOVER
+        self.gravity.terminate()
 
     def move_left(self):
         """move the active shape left direction"""
@@ -113,14 +133,29 @@ class Gravity(threading.Thread):
     def __init__(self, move_down: typing.Callable) -> None:
         super().__init__(None, None, 'Gravity', None, None, daemon=True)
         
-        self.gameover = False
-        self.move_down = move_down
-        self.speed = 0.5
+        self.__playing = True
+        self.__pause = False
+        self.__speed = 1        
+        self.__move_down = move_down
     
     def run(self) -> None:
-        while not self.gameover:
-            self.move_down()
-            time.sleep(self.speed)
+        while self.__playing:
+            while self.__pause: pass
+
+            self.__move_down()
+            time.sleep(self.__speed)
+    
+    def set_speed(self, speed):
+        self.__speed = speed
+    
+    def pause(self):
+        self.__pause = True
+    
+    def resume(self):
+        self.__pause = False
+    
+    def terminate(self):
+        self.__playing = False
 
 
 class RandomShapeGenerator:
@@ -152,10 +187,21 @@ def render(m, title=None):
 if __name__ == "__main__":
     tetris = Tetris()
     tetris.play()
+    render(tetris.grid.get_map(), "PLAYED")
+    time.sleep(2)
+    render(tetris.grid.get_map(), "AFTER 2 SECS")
 
-    while tetris.playing:
-        render(tetris.grid.get_map())
-        time.sleep(0.1)
+    tetris.pause()
+    render(tetris.grid.get_map(), "PAUSED GAME")
+    time.sleep(3)
+    render(tetris.grid.get_map(), "3 SECS PASSED AFTER PAUSE")
+    tetris.resume()
+    render(tetris.grid.get_map(), "RESUME GAME")
+    time.sleep(2)
+    render(tetris.grid.get_map(), "2 SECS PASSED AFTER RESUME")
+    time.sleep(2)
+    render(tetris.grid.get_map(), "4 SECS PASSED AFTER RESUME")
+    
     # time.sleep(2)
     # render(tetris.grid.get_map())
     # time.sleep(0.5)
