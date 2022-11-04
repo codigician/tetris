@@ -17,6 +17,7 @@ BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 WHITE = (0, 0, 0)
 
+
 class GameState(Enum):
     PAUSE = 1
     PLAYING = 2
@@ -49,12 +50,12 @@ class Tetris:
         self.virtual_grid.add_shape(self.active_shape)
 
         self.gravity.start()
-    
+
     def pause(self):
         self.state = GameState.PAUSE
 
         self.gravity.pause()
-    
+
     def resume(self):
         if self.state != GameState.PAUSE:
             raise RuntimeError("resume only works if the game is paused")
@@ -132,28 +133,29 @@ class Tetris:
 class Gravity(threading.Thread):
     def __init__(self, move_down: typing.Callable) -> None:
         super().__init__(None, None, 'Gravity', None, None, daemon=True)
-        
+
         self.__playing = True
         self.__pause = False
-        self.__speed = 1        
+        self.__speed = 1
         self.__move_down = move_down
-    
+
     def run(self) -> None:
         while self.__playing:
-            while self.__pause: pass
+            while self.__pause:
+                pass
 
             self.__move_down()
             time.sleep(self.__speed)
-    
+
     def set_speed(self, speed):
         self.__speed = speed
-    
+
     def pause(self):
         self.__pause = True
-    
+
     def resume(self):
         self.__pause = False
-    
+
     def terminate(self):
         self.__playing = False
 
@@ -201,7 +203,7 @@ if __name__ == "__main__":
     render(tetris.grid.get_map(), "2 SECS PASSED AFTER RESUME")
     time.sleep(2)
     render(tetris.grid.get_map(), "4 SECS PASSED AFTER RESUME")
-    
+
     # time.sleep(2)
     # render(tetris.grid.get_map())
     # time.sleep(0.5)
