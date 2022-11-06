@@ -118,7 +118,8 @@ class Tetris:
             self.virtual_grid.relocate_shape(self.active_shape, row, col)
             return True
         except OccupiedPositionException:
-            onfail()
+            if onfail is not None:
+                onfail()
             return False
 
     def __add_new_shape(self):
