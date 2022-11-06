@@ -175,59 +175,54 @@ class RandomShapeGenerator:
         return create_shape(shape_type, self.row, self.col, shape_color)
 
 
-def render(m, title=None):
-    print()
-    print(title)
-    for row in m:
-        for col in row:
-            if col is None:
-                print('-', end=' ')
-            else:
-                print('U', end=' ')
+
+
+class GameRenderer(threading.Thread):
+    def __init__(self, grid) -> None:
+        super().__init__(None, None, 'GameRenderer', None, None, daemon=True)
+
+        self.playing = True
+        self.speed = 1/60
+        self.grid = grid
+
+    def run(self) -> None:
+        while self.playing:
+            self.render()
+            time.sleep(self.speed)
+
+    def render(self):
         print()
+        for row in self.grid.get_map():
+            for col in row:
+                if col is None:
+                    print('-', end=' ')
+                else:
+                    print('U', end=' ')
+            print()
 
 
 if __name__ == "__main__":
     tetris = Tetris()
     tetris.play()
-    render(tetris.grid.get_map(), "PLAYED")
-    time.sleep(2)
-    render(tetris.grid.get_map(), "AFTER 2 SECS")
 
-    tetris.pause()
-    render(tetris.grid.get_map(), "PAUSED GAME")
-    time.sleep(3)
-    render(tetris.grid.get_map(), "3 SECS PASSED AFTER PAUSE")
-    tetris.resume()
-    render(tetris.grid.get_map(), "RESUME GAME")
-    time.sleep(2)
-    render(tetris.grid.get_map(), "2 SECS PASSED AFTER RESUME")
-    time.sleep(2)
-    render(tetris.grid.get_map(), "4 SECS PASSED AFTER RESUME")
+    renderer = GameRenderer(tetris.grid)
+    renderer.start()
 
-    # time.sleep(2)
-    # render(tetris.grid.get_map())
-    # time.sleep(0.5)
-    # render(tetris.grid.get_map())
-    # time.sleep(3.5)
-    # render(tetris.grid.get_map())
-    # tetris.move_down()
-    # render(tetris.grid.get_map())
-    # tetris.move_ground()
-    # render(tetris.grid.get_map())
-    # tetris.move_right()
-    # render(tetris.grid.get_map())
-    # tetris.hold()
-    # render(tetris.grid.get_map(), "HOLD")
-    # tetris.hold()
-    # render(tetris.grid.get_map(), "HOLD")
-    # tetris.hold()
-    # render(tetris.grid.get_map(), "HOLD")
-    # tetris.move_ground()
-    # render(tetris.grid.get_map(), "GROUND")
-    # tetris.hold()
-    # render(tetris.grid.get_map(), "HOLD")
-    # tetris.rotate()
-    # render(tetris.grid.get_map(), "ROTATE")
-    # tetris.move_right()
-    # render(tetris.grid.get_map(), "RIGHT")
+    while True:
+        choice = input()
+        if choice == 'q':
+            renderer.playing = False
+            break
+
+        if choice == 'a':
+            tetris.move_left()
+        elif choice == 'd':
+            tetris.move_right()
+        elif choice == 's':
+            tetris.move_down()
+        elif choice == 'r':
+            tetris.rotate()
+        elif choice == 'g':
+            tetris.move_ground()
+        elif choice == 'h':
+            tetris.hold()
