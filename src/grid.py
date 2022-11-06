@@ -158,6 +158,10 @@ class TetrisVirtualGrid:
             self.map[unit.row + row][unit.col + col] = unit
             unit.row, unit.col = unit.row + row, unit.col + col
 
+        # update start row and col otherwise rotate will be wrong
+        shape.start_row += row
+        shape.start_col += col
+
     def __solidify(self):
         """Solidify the current state of the virtual grid and release the lock"""
         self.__sync(self.map)
