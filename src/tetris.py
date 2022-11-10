@@ -175,8 +175,6 @@ class RandomShapeGenerator:
         return create_shape(shape_type, self.row, self.col, shape_color)
 
 
-
-
 class GameRenderer(threading.Thread):
     def __init__(self, grid) -> None:
         super().__init__(None, None, 'GameRenderer', None, None, daemon=True)
