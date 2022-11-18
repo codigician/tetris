@@ -24,15 +24,18 @@ tetris = Tetris()
 
 
 def draw_grid(screen, grid):
-    shape = tetris.active_shape
-
     for row in range(len(grid)):
+
         pygame.draw.line(screen, GREY, (START_X, START_Y + row * UNIT_SIZE),
                          (START_X + PLAY_WIDTH, START_Y + row * UNIT_SIZE))
+
         for col in range(len(grid[row])):
+
             pygame.draw.line(screen, GREY, (START_X + col * UNIT_SIZE, START_Y),
                              (START_X + col * UNIT_SIZE, START_Y + PLAY_HEIGHT))
+
             if grid[row][col] != None:
+
                 pygame.draw.rect(
                     screen, grid[row][col].color, (START_X + col * UNIT_SIZE, START_Y + row * UNIT_SIZE, UNIT_SIZE, UNIT_SIZE))
 
@@ -53,18 +56,22 @@ while run:
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_LEFT:
             tetris.move_left()
+
         if event.key == pygame.K_RIGHT:
             tetris.move_right()
+
         if event.key == pygame.K_UP:
             tetris.rotate()
+
         if event.key == pygame.K_DOWN:
             tetris.move_down()
+
         if event.key == pygame.K_SPACE:
             tetris.move_ground()
+
         if event.key == pygame.K_c:
             tetris.hold()
 
     screen.fill(WHITE)
     draw_grid(screen, tetris.grid.get_map())
-    # draw_gridd(screen, tetris.grid.get_map())
     pygame.display.update()
