@@ -15,7 +15,7 @@ import typing
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
-WHITE = (0, 0, 0)
+BLACK = (0, 0, 0)
 
 
 class GameState(Enum):
@@ -26,8 +26,8 @@ class GameState(Enum):
 
 class Tetris:
     def __init__(self) -> None:
-        self.grid = TetrisGrid(10, 10)
-        self.virtual_grid = TetrisVirtualGrid(10, 10, self.grid.sync)
+        self.grid = TetrisGrid(20, 10)
+        self.virtual_grid = TetrisVirtualGrid(20, 10, self.grid.sync)
         self.shape_generator = RandomShapeGenerator(0, 4)
         self.gravity = Gravity(self.move_down)
 
@@ -166,7 +166,7 @@ class RandomShapeGenerator:
         self.row = row
         self.col = col
         self.shapes = ['T', "Z", "L", "I", "S"]
-        self.colors = [RED, BLUE, YELLOW, WHITE]
+        self.colors = [RED, BLUE, YELLOW, BLACK]
 
     def generate(self) -> Shape:
         shape_type = random.choice(self.shapes)
