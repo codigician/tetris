@@ -20,7 +20,7 @@ START_Y = (SCREEN_HEIGHT - PLAY_HEIGHT) / 2
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-tetris = Tetris()
+tetris = Tetris(20, 10)
 
 
 def draw_grid(screen, grid):
