@@ -2,6 +2,10 @@ import pygame
 from tetris import Tetris
 from shape import create_shape
 from shape import Unit
+from grid import TetrisVirtualGrid
+from grid import TetrisGrid
+from tetris import RandomShapeGenerator
+from tetris import Gravity
 
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
@@ -20,7 +24,11 @@ START_Y = (SCREEN_HEIGHT - PLAY_HEIGHT) / 2
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-tetris = Tetris(20, 10)
+grid = TetrisGrid(20, 10)
+virtual_grid = TetrisVirtualGrid(20, 10, grid.sync)
+shape_generator = RandomShapeGenerator(0, 4)
+
+tetris = Tetris(grid, virtual_grid, shape_generator)
 
 
 def draw_grid(screen, grid):

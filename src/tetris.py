@@ -22,13 +22,10 @@ class GameState(Enum):
 
 
 class Tetris:
-    def __init__(self, row: int, col: int) -> None:
-        self.row = row
-        self.col = col
-        self.grid = TetrisGrid(self.row, self.col)
-        self.virtual_grid = TetrisVirtualGrid(
-            self.row, self.col, self.grid.sync)
-        self.shape_generator = RandomShapeGenerator(0, 4)
+    def __init__(self, grid, virtual_grid, shape_generator) -> None:
+        self.grid = grid
+        self.virtual_grid = virtual_grid
+        self.shape_generator = shape_generator
         self.gravity = Gravity(self.move_down)
 
         self.active_shape: Shape = None
