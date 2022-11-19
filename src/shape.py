@@ -1,17 +1,4 @@
 import typing
-import random
-
-
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
-YELLOW = (255, 255, 0)
-GREEN = (0, 255, 0)
-COLORS_LIST = [RED, BLUE, YELLOW, GREEN]
-
-
-def choice_random_color():
-    color = random.choice(COLORS_LIST)
-    return color
 
 
 class Unit:
@@ -22,7 +9,7 @@ class Unit:
 
 
 class Shape:
-    def __init__(self, start_row: int, start_col: int,) -> None:
+    def __init__(self, start_row: int, start_col: int, color) -> None:
         self.start_row = start_row
         self.start_col = start_col
 
@@ -42,11 +29,9 @@ class Shape:
 
 
 class IShape(Shape):
-    def __init__(self, start_row: int, start_col: int,) -> None:
+    def __init__(self, start_row: int, start_col: int, color) -> None:
         self.start_row = start_row
         self.start_col = start_col
-
-        color = choice_random_color()
 
         self.units = [
             Unit(start_row, start_col, color),
@@ -62,11 +47,9 @@ class IShape(Shape):
 
 
 class LShape(Shape):
-    def __init__(self, start_row: int, start_col: int,) -> None:
+    def __init__(self, start_row: int, start_col: int, color) -> None:
         self.start_row = start_row
         self.start_col = start_col
-
-        color = choice_random_color()
 
         self.units = [
             Unit(start_row, start_col, color),
@@ -82,11 +65,9 @@ class LShape(Shape):
 
 
 class TShape(Shape):
-    def __init__(self, start_row: int, start_col: int,) -> None:
+    def __init__(self, start_row: int, start_col: int, color) -> None:
         self.start_row = start_row
         self.start_col = start_col
-
-        color = choice_random_color()
 
         self.units = [
             Unit(start_row, start_col, color),
@@ -102,11 +83,9 @@ class TShape(Shape):
 
 
 class ZShape(Shape):
-    def __init__(self, start_row: int, start_col: int,) -> None:
+    def __init__(self, start_row: int, start_col: int, color) -> None:
         self.start_row = start_row
         self.start_col = start_col
-
-        color = choice_random_color()
 
         self.units = [
             Unit(start_row, start_col, color),
@@ -122,11 +101,9 @@ class ZShape(Shape):
 
 
 class SquareShape(Shape):
-    def __init__(self, start_row: int, start_col: int,) -> None:
+    def __init__(self, start_row: int, start_col: int, color) -> None:
         self.start_row = start_row
         self.start_col = start_col
-
-        color = choice_random_color()
 
         self.units = [
             Unit(start_row, start_col, color),
@@ -141,17 +118,17 @@ class SquareShape(Shape):
             self.grid[unit.row - start_row][unit.col - start_col] = unit
 
 
-def create_shape(type: str, start_row: int, start_col: int) -> Shape:
+def create_shape(type: str, start_row: int, start_col: int, color=(0, 0, 0)) -> Shape:
     if type == "I":
-        return IShape(start_row, start_col)
+        return IShape(start_row, start_col, color)
     elif type == "L":
-        return LShape(start_row, start_col)
+        return LShape(start_row, start_col, color)
     elif type == "T":
-        return TShape(start_row, start_col)
+        return TShape(start_row, start_col, color)
     elif type == "Z":
-        return ZShape(start_row, start_col)
+        return ZShape(start_row, start_col, color)
     elif type == "S":
-        return SquareShape(start_row, start_col)
+        return SquareShape(start_row, start_col, color)
 
     raise NotImplementedError("Shape type not implemented")
 

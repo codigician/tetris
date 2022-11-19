@@ -166,15 +166,17 @@ class Gravity(threading.Thread):
 
 
 class RandomShapeGenerator:
-    def __init__(self, row: int, col: int) -> None:
+    def __init__(self, row: int, col: int, colors) -> None:
         self.row = row
         self.col = col
         self.shapes = ['T', "Z", "L", "I", "S"]
+        self.colors = colors
 
     def generate(self) -> Shape:
         shape_type = random.choice(self.shapes)
+        color = random.choice(self.colors)
 
-        return create_shape(shape_type, self.row, self.col)
+        return create_shape(shape_type, self.row, self.col, color)
 
 
 class GameRenderer(threading.Thread):
