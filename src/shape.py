@@ -158,7 +158,4 @@ def rotate(shape: Shape) -> Shape:
     rotated_shape.grid = rotated_grid
     rotated_shape.units = units
 
-    # DEBUG: uncomment to see the rotation
-    # print('OLD_SHAPE\n%s\nROTATED_SHAPE\n%s' % (shape.__str__(), rotated_shape.__str__()))
-    # print(["{} {}".format(unit.row, unit.col) for unit in rotated_shape.units])
     return rotated_shape
