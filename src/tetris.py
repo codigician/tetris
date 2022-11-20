@@ -22,11 +22,13 @@ class GameState(Enum):
 
 
 class Tetris:
-    def __init__(self, grid, virtual_grid, shape_generator) -> None:
+    def __init__(self, grid, virtual_grid, shape_generator, gravity) -> None:
         self.grid = grid
         self.virtual_grid = virtual_grid
         self.shape_generator = shape_generator
-        self.gravity = Gravity(self.move_down)
+
+        self.gravity = gravity
+        self.gravity.set_move_down(self.move_down)
 
         self.active_shape: Shape = None
         self.held_shape: Shape = None
@@ -129,7 +131,7 @@ class Tetris:
 
 
 class Gravity(threading.Thread):
-    def __init__(self, move_down: typing.Callable) -> None:
+    def __init__(self, move_down: typing.Callable = None) -> None:
         super().__init__(None, None, 'Gravity', None, None, daemon=True)
 
         self.__playing = True
@@ -142,11 +144,16 @@ class Gravity(threading.Thread):
             while self.__pause:
                 pass
 
-            self.__move_down()
+            if self.__move_down is not None:
+                self.__move_down()
+
             time.sleep(self.__speed)
 
     def set_speed(self, speed):
         self.__speed = speed
+
+    def set_move_down(self, move_down):
+        self.__move_down = move_down
 
     def pause(self):
         self.__pause = True
@@ -159,15 +166,17 @@ class Gravity(threading.Thread):
 
 
 class RandomShapeGenerator:
-    def __init__(self, row: int, col: int) -> None:
+    def __init__(self, row: int, col: int, colors) -> None:
         self.row = row
         self.col = col
         self.shapes = ['T', "Z", "L", "I", "S"]
+        self.colors = colors
 
     def generate(self) -> Shape:
         shape_type = random.choice(self.shapes)
+        color = random.choice(self.colors)
 
-        return create_shape(shape_type, self.row, self.col)
+        return create_shape(shape_type, self.row, self.col, color)
 
 
 class GameRenderer(threading.Thread):
