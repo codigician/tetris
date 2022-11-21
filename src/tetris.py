@@ -112,6 +112,9 @@ class Tetris:
         except OccupiedPositionException:
             pass
 
+    def blow_up_row(self):
+        self.virtual_grid.expolode_row()
+
     def __move(self, row=0, col=0, onfail: typing.Callable = None) -> bool:
         try:
             self.virtual_grid.relocate_shape(self.active_shape, row, col)

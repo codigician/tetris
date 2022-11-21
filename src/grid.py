@@ -1,3 +1,4 @@
+import copy
 import threading
 from shape import Shape
 from shape import Unit
@@ -63,6 +64,9 @@ class TetrisVirtualGrid:
             OccupiedPositionException: If the shape cannot be placed on the grid.
         """
         self.__lock.acquire()
+
+        while self.__check_full_row():
+            self.explode_rows()
 
         if not self.__is_shape_placeable(shape):
             self.__lock.release()
@@ -161,6 +165,26 @@ class TetrisVirtualGrid:
         # update start row and col otherwise rotate will be wrong
         shape.start_row += row
         shape.start_col += col
+
+    def __check_full_row(self):
+        for i in range(len(self.map)):
+            if None not in self.map[i]:
+                return True
+
+        return False
+
+    def explode_rows(self):
+
+        for i in range(len(self.map)-1, -1, -1):
+            if None not in self.map[i]:
+                idx = i
+                self.shift_down_rows(idx)
+
+    def shift_down_rows(self, idx):
+        while idx >= 1:
+            copy_row = copy.copy(self.map[idx-1])
+            self.map[idx] = copy_row
+            idx -= 1
 
     def __solidify(self):
         """Solidify the current state of the virtual grid and release the lock"""
