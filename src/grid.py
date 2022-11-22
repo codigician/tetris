@@ -65,10 +65,6 @@ class TetrisVirtualGrid:
         """
         self.__lock.acquire()
 
-        while self.__check_full_row():
-            idx = self.find_explode_rows()
-            self.shift_down_rows(idx)
-
         if not self.__is_shape_placeable(shape):
             self.__lock.release()
             raise OccupiedPositionException()
@@ -166,18 +162,6 @@ class TetrisVirtualGrid:
         # update start row and col otherwise rotate will be wrong
         shape.start_row += row
         shape.start_col += col
-
-    def __check_full_row(self):
-        for i in range(len(self.map)):
-            if None not in self.map[i]:
-                return True
-
-        return False
-
-    def find_explode_rows(self):
-        for i in range(len(self.map)-1, -1, -1):
-            if None not in self.map[i]:
-                return i
 
     def shift_down_rows(self, idx):
         while idx >= 1:

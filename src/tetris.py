@@ -113,11 +113,9 @@ class Tetris:
             pass
 
     def explode(self):
-        for i in range(len(self.map)-1, -1, -1):
-            if None not in self.map[i]:
-                idx = i
-                self.virtual.shift_down_rows(idx)
-        return idx
+        for i in range(len(self.virtual_grid.map)-1, -1, -1):
+            if None not in self.virtual_grid.map[i]:
+                self.virtual_grid.shift_down_rows(idx=i)
 
     def __move(self, row=0, col=0, onfail: typing.Callable = None) -> bool:
         try:
@@ -130,6 +128,7 @@ class Tetris:
 
     def __add_new_shape(self):
         try:
+            self.explode()
             self.active_shape = self.shape_generator.generate()
             self.virtual_grid.add_shape(self.active_shape)
             self.is_shape_exchanged = False
