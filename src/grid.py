@@ -173,12 +173,18 @@ class TetrisVirtualGrid:
 
         return False
 
+    def find_explode_row(self):
+        for row in range(len(self.map)):
+            if None not in row:
+                return row
+
     def explode_rows(self):
 
         for i in range(len(self.map)-1, -1, -1):
             if None not in self.map[i]:
                 idx = i
                 self.shift_down_rows(idx)
+        return idx
 
     def shift_down_rows(self, idx):
         while idx >= 1:

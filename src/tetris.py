@@ -112,8 +112,8 @@ class Tetris:
         except OccupiedPositionException:
             pass
 
-    def blow_up_row(self):
-        self.virtual_grid.expolode_row()
+    def explode(self):
+        row_idx = self.virtual_grid.find_explode_row()
 
     def __move(self, row=0, col=0, onfail: typing.Callable = None) -> bool:
         try:
