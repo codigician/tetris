@@ -66,7 +66,8 @@ class TetrisVirtualGrid:
         self.__lock.acquire()
 
         while self.__check_full_row():
-            self.explode_rows()
+            idx = self.find_explode_rows()
+            self.shift_down_rows(idx)
 
         if not self.__is_shape_placeable(shape):
             self.__lock.release()
@@ -173,18 +174,10 @@ class TetrisVirtualGrid:
 
         return False
 
-    def find_explode_row(self):
-        for row in range(len(self.map)):
-            if None not in row:
-                return row
-
-    def explode_rows(self):
-
+    def find_explode_rows(self):
         for i in range(len(self.map)-1, -1, -1):
             if None not in self.map[i]:
-                idx = i
-                self.shift_down_rows(idx)
-        return idx
+                return i
 
     def shift_down_rows(self, idx):
         while idx >= 1:

@@ -113,7 +113,11 @@ class Tetris:
             pass
 
     def explode(self):
-        row_idx = self.virtual_grid.find_explode_row()
+        for i in range(len(self.map)-1, -1, -1):
+            if None not in self.map[i]:
+                idx = i
+                self.virtual.shift_down_rows(idx)
+        return idx
 
     def __move(self, row=0, col=0, onfail: typing.Callable = None) -> bool:
         try:
