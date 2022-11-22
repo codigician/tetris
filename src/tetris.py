@@ -112,6 +112,11 @@ class Tetris:
         except OccupiedPositionException:
             pass
 
+    def explode(self):
+        for i in range(len(self.virtual_grid.map)):
+            if None not in self.virtual_grid.map[i]:
+                self.virtual_grid.shift_down_rows(idx=i)
+
     def __move(self, row=0, col=0, onfail: typing.Callable = None) -> bool:
         try:
             self.virtual_grid.relocate_shape(self.active_shape, row, col)
@@ -123,6 +128,7 @@ class Tetris:
 
     def __add_new_shape(self):
         try:
+            self.explode()
             self.active_shape = self.shape_generator.generate()
             self.virtual_grid.add_shape(self.active_shape)
             self.is_shape_exchanged = False

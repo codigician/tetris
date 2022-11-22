@@ -1,3 +1,4 @@
+import copy
 import threading
 from shape import Shape
 from shape import Unit
@@ -161,6 +162,12 @@ class TetrisVirtualGrid:
         # update start row and col otherwise rotate will be wrong
         shape.start_row += row
         shape.start_col += col
+
+    def shift_down_rows(self, idx):
+        while idx >= 1:
+            copy_row = copy.copy(self.map[idx-1])
+            self.map[idx] = copy_row
+            idx -= 1
 
     def __solidify(self):
         """Solidify the current state of the virtual grid and release the lock"""
