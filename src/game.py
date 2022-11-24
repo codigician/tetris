@@ -76,8 +76,11 @@ class Game:
         score_text_display = score_text.render(
             'Score: {0}'.format(tetris.score), 1, blue)
 
-        screen.blit(score_text_display, (100, 100))
+        level_text_display = score_text.render(
+            'Level : {0}'.format(tetris.level), 1, blue)
 
+        screen.blit(score_text_display, (100, 100))
+        screen.blit(level_text_display, (100, 140))
         grid = self.tetris.grid.get_map()
 
         for row in range(len(grid)):

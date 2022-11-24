@@ -27,11 +27,13 @@ class Tetris:
         self.virtual_grid = virtual_grid
         self.shape_generator = shape_generator
 
+        self.shape_count = 0
         self.score = 0
-        self.level = (self.score) / 1000
+        self.level = 1
 
         self.gravity = gravity
-        self.gravity.set_speed(speed=1 - 2*(self.level / 10))
+
+        self.gravity.set_move_down(self.move_down)
 
         self.active_shape: Shape = None
         self.held_shape: Shape = None
@@ -48,7 +50,6 @@ class Tetris:
         self.state = GameState.PLAYING
         self.active_shape: Shape = self.shape_generator.generate()
         self.virtual_grid.add_shape(self.active_shape)
-        self.gravity.set_move_down(self.move_down)
         self.gravity.start()
 
     def pause(self):
@@ -120,6 +121,10 @@ class Tetris:
                 exploded_rows_counter += 1
                 self.virtual_grid.shift_down_rows(idx=i)
         self.score = self.calculate_score(exploded_rows_counter)
+        if self.level / 300 >= 0.8:
+            self.gravity.set_speed(speed=0.2)
+        else:
+            self.gravity.set_speed(speed=1 - (self.level / 500))
 
     def calculate_score(self, exploded_rows_counter):
         self.score += (exploded_rows_counter**2) * 20
@@ -138,6 +143,8 @@ class Tetris:
         try:
             self.explode()
             self.active_shape = self.shape_generator.generate()
+            self.shape_count += 1
+            self.level = self.shape_count // 2
             self.virtual_grid.add_shape(self.active_shape)
             self.is_shape_exchanged = False
         except OccupiedPositionException:
