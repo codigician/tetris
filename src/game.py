@@ -63,7 +63,7 @@ class Game:
         self.tetris.play()
 
         while self.tetris.state != GameState.GAMEOVER:
-            pygame.time.delay(10)
+            pygame.time.delay(2)
 
             self.update()
             self.render()
