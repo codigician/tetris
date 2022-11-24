@@ -64,7 +64,6 @@ class Game:
 
         while self.tetris.state != GameState.GAMEOVER:
             pygame.time.delay(10)
-            self.tetris.gravity.set_speed(speed=1 - 2*(tetris.level / 10))
 
             self.update()
             self.render()
