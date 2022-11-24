@@ -125,7 +125,6 @@ class Tetris:
 
         self.score += (exploded_rows_counter**2) * 20
 
-
     def __move(self, row=0, col=0, onfail: typing.Callable = None) -> bool:
         try:
             self.virtual_grid.relocate_shape(self.active_shape, row, col)
