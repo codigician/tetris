@@ -29,7 +29,7 @@ class Tetris:
 
         self.shape_count = 0
         self.score = 0
-        self.level = 1
+        self.level = 0
 
         self.gravity = gravity
 
