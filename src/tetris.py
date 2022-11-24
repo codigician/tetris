@@ -33,8 +33,6 @@ class Tetris:
         self.gravity = gravity
         self.gravity.set_speed(speed=1 - 2*(self.level / 10))
 
-        self.gravity.set_move_down(self.move_down)
-
         self.active_shape: Shape = None
         self.held_shape: Shape = None
         self.is_shape_exchanged = False
@@ -50,6 +48,7 @@ class Tetris:
         self.state = GameState.PLAYING
         self.active_shape: Shape = self.shape_generator.generate()
         self.virtual_grid.add_shape(self.active_shape)
+        self.gravity.set_move_down(self.move_down)
         self.gravity.start()
 
     def pause(self):
