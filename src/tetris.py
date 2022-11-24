@@ -27,7 +27,12 @@ class Tetris:
         self.virtual_grid = virtual_grid
         self.shape_generator = shape_generator
 
+        self.score = 0
+        self.level = (self.score+1) / 1000
+
         self.gravity = gravity
+        self.gravity.set_speed(speed=1 - 2*(self.level / 10))
+
         self.gravity.set_move_down(self.move_down)
 
         self.active_shape: Shape = None
@@ -35,8 +40,6 @@ class Tetris:
         self.is_shape_exchanged = False
 
         self.state: GameState = None
-        self.score = 0
-        self.level = (self.score+1) / 1000
 
     def play(self) -> None:
         """play starts the game loop
