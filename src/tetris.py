@@ -36,7 +36,7 @@ class Tetris:
 
         self.state: GameState = None
         self.score = 0
-        self.level = 0
+        self.level = (self.score+1) / 1000
 
     def play(self) -> None:
         """play starts the game loop
@@ -44,10 +44,8 @@ class Tetris:
         Start gravity thread to move the active shape down
         """
         self.state = GameState.PLAYING
-
         self.active_shape: Shape = self.shape_generator.generate()
         self.virtual_grid.add_shape(self.active_shape)
-
         self.gravity.start()
 
     def pause(self):
@@ -113,9 +111,16 @@ class Tetris:
             pass
 
     def explode(self):
+        counter = 0
         for i in range(len(self.virtual_grid.map)):
             if None not in self.virtual_grid.map[i]:
+                counter += 1
                 self.virtual_grid.shift_down_rows(idx=i)
+        self.score = self.calculate_score(counter)
+
+    def calculate_score(self, counter):
+        self.score += (counter**2) * 20
+        return self.score
 
     def __move(self, row=0, col=0, onfail: typing.Callable = None) -> bool:
         try:
