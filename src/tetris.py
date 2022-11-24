@@ -29,7 +29,7 @@ class Tetris:
 
         self.shape_count = 0
         self.score = 0
-        self.level = 0
+        self.level = 1
 
         self.gravity = gravity
 
@@ -48,8 +48,10 @@ class Tetris:
         Start gravity thread to move the active shape down
         """
         self.state = GameState.PLAYING
+
         self.active_shape: Shape = self.shape_generator.generate()
         self.virtual_grid.add_shape(self.active_shape)
+
         self.gravity.start()
 
     def pause(self):
@@ -120,15 +122,9 @@ class Tetris:
             if None not in self.virtual_grid.map[i]:
                 exploded_rows_counter += 1
                 self.virtual_grid.shift_down_rows(idx=i)
-        self.score = self.calculate_score(exploded_rows_counter)
-        if self.level / 300 >= 0.8:
-            self.gravity.set_speed(speed=0.2)
-        else:
-            self.gravity.set_speed(speed=1 - (self.level / 500))
 
-    def calculate_score(self, exploded_rows_counter):
         self.score += (exploded_rows_counter**2) * 20
-        return self.score
+
 
     def __move(self, row=0, col=0, onfail: typing.Callable = None) -> bool:
         try:
@@ -142,10 +138,15 @@ class Tetris:
     def __add_new_shape(self):
         try:
             self.explode()
+
             self.active_shape = self.shape_generator.generate()
             self.shape_count += 1
-            self.level = self.shape_count // 2
+
+            self.level = 1 + self.shape_count // 20
+            self.gravity.set_speed(speed=min(1, 2 / self.level))
+
             self.virtual_grid.add_shape(self.active_shape)
+
             self.is_shape_exchanged = False
         except OccupiedPositionException:
             self.gameover()
