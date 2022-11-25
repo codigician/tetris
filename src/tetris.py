@@ -1,4 +1,5 @@
 from grid import OccupiedPositionException
+from grid import HeldGrid
 from grid import TetrisGrid
 from grid import TetrisVirtualGrid
 from shape import Shape
@@ -22,9 +23,10 @@ class GameState(Enum):
 
 
 class Tetris:
-    def __init__(self, grid, virtual_grid, shape_generator, gravity) -> None:
+    def __init__(self, grid, virtual_grid, shape_generator, gravity, held_grid) -> None:
         self.grid = grid
         self.virtual_grid = virtual_grid
+        self.held_grid = held_grid
         self.shape_generator = shape_generator
 
         self.shape_count = 0
@@ -111,6 +113,13 @@ class Tetris:
             self.virtual_grid.replace_shape(self.active_shape, tmp_held_shape)
 
             self.held_shape = tmp_held_shape
+
+            if self.held_grid.is_empty():
+                self.held_grid.add_shape_to_held(self.active_shape)
+            else:
+                self.held_grid.clear_grid()
+                self.held_grid.add_shape_to_held(self.active_shape)
+
             self.active_shape, self.held_shape = self.held_shape, self.active_shape
             self.is_shape_exchanged = True
         except OccupiedPositionException:

@@ -2,6 +2,7 @@ import pygame
 
 from tetris import Tetris
 from tetris import GameState
+from grid import HeldGrid
 from grid import TetrisVirtualGrid
 from grid import TetrisGrid
 from tetris import RandomShapeGenerator
@@ -82,6 +83,24 @@ class Game:
         screen.blit(score_text_display, (100, 100))
         screen.blit(level_text_display, (100, 140))
         grid = self.tetris.grid.get_map()
+        held_grid = self.tetris.held_grid.get_held_map()
+
+        # Draw held grid
+
+        for row in range(len(held_grid)):
+            pygame.draw.line(screen, grey, (50, 200 + row *
+                             unit_size), (230, 200 + row * unit_size))
+            for col in range(len(held_grid[row])):
+                pygame.draw.line(
+                    screen, grey, (50 + col * unit_size, 200), (50 + col * unit_size, 380))
+
+                if held_grid[row][col] != None:
+                    pygame.draw.rect(screen, held_grid[row][col].color, (
+                        50 + col * unit_size, 200 + row * unit_size, unit_size, unit_size))
+
+        pygame.draw.line(screen, grey, (230, 200), (230, 380))
+        pygame.draw.line(screen, grey, (50, 380), (230, 380))
+        #  Draw tetris grid
 
         for row in range(len(grid)):
             pygame.draw.line(screen, grey, (start_x, start_y + row * unit_size),
@@ -107,11 +126,12 @@ if __name__ == "__main__":
     screen = pygame.display.set_mode((screen_width, screen_height))
 
     grid = TetrisGrid(20, 10)
+    held_grid = HeldGrid()
     virtual_grid = TetrisVirtualGrid(20, 10, grid.sync)
     shape_generator = RandomShapeGenerator(0, 4, colors)
     gravity = Gravity()
 
-    tetris = Tetris(grid, virtual_grid, shape_generator, gravity)
+    tetris = Tetris(grid, virtual_grid, shape_generator, gravity, held_grid)
 
     game = Game(screen, tetris)
     game.start()

@@ -10,6 +10,36 @@ class OccupiedPositionException(Exception):
     pass
 
 
+class HeldGrid:
+    def __init__(self):
+        self.grid = [[None for _ in range(6)] for _ in range(6)]
+
+    def get_held_map(self) -> typing.Tuple[typing.Tuple[Unit]]:
+        return self.grid
+
+    def add_shape_to_held(self, shape: Shape) -> None:
+        try:
+            diff_row = abs(2-shape.units[0].row)
+            diff_col = abs(2-shape.units[0].col)
+            for unit in shape.units:
+                self.grid[abs(unit.row - diff_row)
+                          ][abs(unit.col - diff_col)] = unit
+
+        except:
+            return
+
+    def is_empty(self):
+        for i in range(len(self.grid)):
+            if None not in self.grid[i]:
+                return True
+        return False
+
+    def clear_grid(self):
+        for row in range(len(self.grid)):
+            for col in range(len(self.grid[row])):
+                self.grid[row][col] = None
+
+
 class TetrisGrid:
     """TetrisGrid is a class that represents the grid of the game."""
 
