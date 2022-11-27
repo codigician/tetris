@@ -35,6 +35,8 @@ class Game:
         self.tetris = tetris
 
     def update(self):
+        mouse = pygame.mouse.get_pos()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -57,6 +59,16 @@ class Game:
                 if event.key == pygame.K_c:
                     tetris.hold()
 
+                if event.key == pygame.K_p:
+                    tetris.pause()
+
+                if event.key == pygame.K_r:
+                    tetris.resume()
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if 200 <= mouse[0] <= 600 and 200 <= mouse[1] <= 300:
+                    tetris.state = GameState.PLAYING
+
     def start(self):
         pygame.init()
         pygame.font.init()
@@ -66,58 +78,78 @@ class Game:
         while self.tetris.state != GameState.GAMEOVER:
             pygame.time.delay(2)
 
-            self.update()
-            self.render()
+            if tetris.state == GameState.PLAYING:
+                self.update()
+                self.render()
+
+            if tetris.state == GameState.PAUSE:
+                self.update()
+                self.render()
 
     def render(self):
         screen.fill(white)
 
-        score_text = pygame.font.SysFont('arial', 18)
+        if tetris.state == GameState.PLAYING:
 
-        score_text_display = score_text.render(
-            'Score: {0}'.format(tetris.score), 1, blue)
+            score_text = pygame.font.SysFont('arial', 18)
 
-        level_text_display = score_text.render(
-            'Level : {0}'.format(tetris.level), 1, blue)
+            score_text_display = score_text.render(
+                'Score: {0}'.format(tetris.score), 1, blue)
 
-        screen.blit(score_text_display, (100, 100))
-        screen.blit(level_text_display, (100, 140))
-        grid = self.tetris.grid.get_map()
-        held_grid = self.tetris.held_grid.get_held_map()
+            level_text_display = score_text.render(
+                'Level : {0}'.format(tetris.level), 1, blue)
 
-        # Draw held grid
+            screen.blit(score_text_display, (100, 100))
+            screen.blit(level_text_display, (100, 140))
+            grid = self.tetris.grid.get_map()
+            held_grid = self.tetris.held_grid.get_held_map()
 
-        for row in range(len(held_grid)):
-            pygame.draw.line(screen, grey, (50, 200 + row *
-                             unit_size), (230, 200 + row * unit_size))
-            for col in range(len(held_grid[row])):
-                pygame.draw.line(
-                    screen, grey, (50 + col * unit_size, 200), (50 + col * unit_size, 380))
+            # Draw held grid
 
-                if held_grid[row][col] != None:
-                    pygame.draw.rect(screen, held_grid[row][col].color, (
-                        50 + col * unit_size, 200 + row * unit_size, unit_size, unit_size))
+            for row in range(len(held_grid)):
+                pygame.draw.line(screen, grey, (50, 200 + row *
+                                                unit_size), (230, 200 + row * unit_size))
+                for col in range(len(held_grid[row])):
+                    pygame.draw.line(
+                        screen, grey, (50 + col * unit_size, 200), (50 + col * unit_size, 380))
 
-        pygame.draw.line(screen, grey, (230, 200), (230, 380))
-        pygame.draw.line(screen, grey, (50, 380), (230, 380))
-        #  Draw tetris grid
+                    if held_grid[row][col] != None:
+                        pygame.draw.rect(screen, held_grid[row][col].color, (
+                            50 + col * unit_size, 200 + row * unit_size, unit_size, unit_size))
 
-        for row in range(len(grid)):
-            pygame.draw.line(screen, grey, (start_x, start_y + row * unit_size),
-                             (start_x + grid_width, start_y + row * unit_size))
+            pygame.draw.line(screen, grey, (230, 200), (230, 380))
+            pygame.draw.line(screen, grey, (50, 380), (230, 380))
+            #  Draw tetris grid
 
-            for col in range(len(grid[row])):
-                pygame.draw.line(screen, grey, (start_x + col * unit_size, start_y),
-                                 (start_x + col * unit_size, start_y + grid_height))
+            for row in range(len(grid)):
+                pygame.draw.line(screen, grey, (start_x, start_y + row * unit_size),
+                                 (start_x + grid_width, start_y + row * unit_size))
 
-                if grid[row][col] != None:
-                    pygame.draw.rect(
-                        screen, grid[row][col].color, (start_x + col * unit_size, start_y + row * unit_size, unit_size, unit_size))
+                for col in range(len(grid[row])):
+                    pygame.draw.line(screen, grey, (start_x + col * unit_size, start_y),
+                                     (start_x + col * unit_size, start_y + grid_height))
 
-        pygame.draw.line(screen, grey, (start_x + grid_width, start_y),
-                         (start_x + grid_width, start_y + grid_height))
-        pygame.draw.line(screen, grey, (start_x, start_y + grid_height),
-                         (start_x + grid_width, start_y + grid_height))
+                    if grid[row][col] != None:
+                        pygame.draw.rect(
+                            screen, grid[row][col].color, (start_x + col * unit_size, start_y + row * unit_size, unit_size, unit_size))
+
+            pygame.draw.line(screen, grey, (start_x + grid_width, start_y),
+                             (start_x + grid_width, start_y + grid_height))
+            pygame.draw.line(screen, grey, (start_x, start_y + grid_height),
+                             (start_x + grid_width, start_y + grid_height))
+
+        elif tetris.state == GameState.PAUSE:
+
+            text = pygame.font.SysFont('arial', 50)
+
+            resume_display = text.render('Resume the game', 1, (0, 0, 0))
+            quit_display = text.render('Quit', 1, (0, 0, 0))
+
+            screen.blit(resume_display, (230, 220))
+            screen.blit(quit_display, (350, 420))
+
+            pygame.draw.rect(screen, (0, 0, 0), (200, 400, 400, 100), 1)
+            pygame.draw.rect(screen, (0, 0, 0), (200, 200, 400, 100), 1)
 
         pygame.display.update()
 

@@ -18,15 +18,11 @@ class HeldGrid:
         return self.grid
 
     def add_shape_to_held(self, shape: Shape) -> None:
-        try:
-            diff_row = abs(2-shape.units[0].row)
-            diff_col = abs(2-shape.units[0].col)
-            for unit in shape.units:
-                self.grid[abs(unit.row - diff_row)
-                          ][abs(unit.col - diff_col)] = unit
-
-        except:
-            return
+        diff_row = abs(2-shape.units[0].row)
+        diff_col = abs(2-shape.units[0].col)
+        for unit in shape.units:
+            self.grid[abs(unit.row - diff_row)
+                      ][abs(unit.col - diff_col)] = unit
 
     def is_empty(self):
         for i in range(len(self.grid)):
