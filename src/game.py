@@ -78,13 +78,8 @@ class Game:
         while self.tetris.state != GameState.GAMEOVER:
             pygame.time.delay(2)
 
-            if tetris.state == GameState.PLAYING:
-                self.update()
-                self.render()
-
-            if tetris.state == GameState.PAUSE:
-                self.update()
-                self.render()
+            self.update()
+            self.render()
 
     def render(self):
         screen.fill(white)
@@ -138,6 +133,8 @@ class Game:
             pygame.draw.line(screen, grey, (start_x, start_y + grid_height),
                              (start_x + grid_width, start_y + grid_height))
 
+            pygame.display.update()
+
         elif tetris.state == GameState.PAUSE:
 
             text = pygame.font.SysFont('arial', 50)
@@ -151,7 +148,7 @@ class Game:
             pygame.draw.rect(screen, (0, 0, 0), (200, 400, 400, 100), 1)
             pygame.draw.rect(screen, (0, 0, 0), (200, 200, 400, 100), 1)
 
-        pygame.display.update()
+            pygame.display.update()
 
 
 if __name__ == "__main__":
