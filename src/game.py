@@ -68,6 +68,27 @@ class Game:
             self.update()
             self.render()
 
+    def render_held_shape_grid(self):
+        sx, sy, w = 750, 250, 120
+
+        pygame.draw.line(self.screen, black, (sx, sy), (sx, sy-w))
+        pygame.draw.line(self.screen, black, (sx, sy), (sx-w, sy))
+        pygame.draw.line(self.screen, black, (sx-w, sy-w), (sx-w, sy))
+        pygame.draw.line(self.screen, black, (sx-w, sy-w), (sx, sy-w))
+
+        if self.tetris.held_shape is not None:
+            held_shape_grid = self.tetris.held_shape.grid
+            
+            for row in range(len(held_shape_grid)):
+                for col in range(len(held_shape_grid[row])):
+                    if held_shape_grid[row][col] != None:
+                        pygame.draw.rect(self.screen, held_shape_grid[row][col].color, (
+                            sx - (col+1) * unit_size, sy - (row+1) * unit_size, unit_size, unit_size))
+
+                        # draw borders around the shape
+                        pygame.draw.rect(self.screen, black, (
+                            sx - (col+1) * unit_size, sy - (row+1) * unit_size, unit_size, unit_size), 2)
+
     def render(self):
         screen.fill(white)
 
@@ -99,6 +120,8 @@ class Game:
                          (start_x + grid_width, start_y + grid_height))
         pygame.draw.line(screen, grey, (start_x, start_y + grid_height),
                          (start_x + grid_width, start_y + grid_height))
+
+        self.render_held_shape_grid()
 
         pygame.display.update()
 
