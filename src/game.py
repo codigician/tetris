@@ -12,10 +12,17 @@ black = (0, 0, 0)
 red = (255, 0, 0)
 grey = (128, 128, 128)
 white = (255, 255, 255)
-blue = (0, 0, 255)
+blue = (173, 216, 230)
 green = (0, 100, 0)
 
-colors = (red, blue, black, green)
+colors = (
+    (255, 0, 0),
+    (0, 255, 0),
+    (173, 216, 230),
+    (255, 255, 0),
+    (255, 0, 255),
+    (0, 255, 255),
+)
 
 screen_width = 800
 screen_height = 700
@@ -78,7 +85,7 @@ class Game:
 
         if self.tetris.held_shape is not None:
             held_shape_grid = self.tetris.held_shape.grid
-            
+
             for row in range(len(held_shape_grid)):
                 for col in range(len(held_shape_grid[row])):
                     if held_shape_grid[row][col] != None:
@@ -90,7 +97,7 @@ class Game:
                             sx - (col+1) * unit_size, sy - (row+1) * unit_size, unit_size, unit_size), 2)
 
     def render(self):
-        screen.fill(white)
+        screen.fill(black)
 
         score_text = pygame.font.SysFont('arial', 18)
 
@@ -115,6 +122,10 @@ class Game:
                 if grid[row][col] != None:
                     pygame.draw.rect(
                         screen, grid[row][col].color, (start_x + col * unit_size, start_y + row * unit_size, unit_size, unit_size))
+
+                    # draw borders around the shape
+                    pygame.draw.rect(
+                        screen, black, (start_x + col * unit_size, start_y + row * unit_size, unit_size, unit_size), 2)
 
         pygame.draw.line(screen, grey, (start_x + grid_width, start_y),
                          (start_x + grid_width, start_y + grid_height))
