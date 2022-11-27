@@ -58,10 +58,12 @@ class Game:
 
     def start(self):
         pygame.init()
+        pygame.font.init()
+
         self.tetris.play()
 
         while self.tetris.state != GameState.GAMEOVER:
-            pygame.time.delay(10)
+            pygame.time.delay(2)
 
             self.update()
             self.render()
@@ -69,6 +71,16 @@ class Game:
     def render(self):
         screen.fill(white)
 
+        score_text = pygame.font.SysFont('arial', 18)
+
+        score_text_display = score_text.render(
+            'Score: {0}'.format(tetris.score), 1, blue)
+
+        level_text_display = score_text.render(
+            'Level : {0}'.format(tetris.level), 1, blue)
+
+        screen.blit(score_text_display, (100, 100))
+        screen.blit(level_text_display, (100, 140))
         grid = self.tetris.grid.get_map()
 
         for row in range(len(grid)):
