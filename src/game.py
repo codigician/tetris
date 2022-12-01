@@ -12,10 +12,17 @@ black = (0, 0, 0)
 red = (255, 0, 0)
 grey = (128, 128, 128)
 white = (255, 255, 255)
-blue = (0, 0, 255)
+blue = (173, 216, 230)
 green = (0, 100, 0)
 
-colors = (red, blue, black, green)
+colors = (
+    (255, 0, 0),
+    (0, 255, 0),
+    (173, 216, 230),
+    (255, 255, 0),
+    (255, 0, 255),
+    (0, 255, 255),
+)
 
 screen_width = 800
 screen_height = 700
@@ -38,6 +45,9 @@ class Game:
             if event.type == pygame.QUIT:
                 pygame.quit()
             elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+
                 if event.key == pygame.K_LEFT:
                     tetris.move_left()
 
@@ -56,49 +66,113 @@ class Game:
                 if event.key == pygame.K_c:
                     tetris.hold()
 
+                if event.key == pygame.K_p:
+                    tetris.state = GameState.PAUSE
+
+                if event.key == pygame.K_r:
+                    tetris.state = GameState.PLAYING
+
     def start(self):
         pygame.init()
         pygame.font.init()
 
         self.tetris.play()
 
-        while self.tetris.state != GameState.GAMEOVER:
+        while True:
             pygame.time.delay(2)
 
             self.update()
             self.render()
 
+    def render_held_shape_grid(self):
+        sx, sy, w = 750, 250, 120
+
+        pygame.draw.line(self.screen, black, (sx, sy), (sx, sy-w))
+        pygame.draw.line(self.screen, black, (sx, sy), (sx-w, sy))
+        pygame.draw.line(self.screen, black, (sx-w, sy-w), (sx-w, sy))
+        pygame.draw.line(self.screen, black, (sx-w, sy-w), (sx, sy-w))
+
+        if self.tetris.held_shape is not None:
+            held_shape_grid = self.tetris.held_shape.grid
+
+            for row in range(len(held_shape_grid)):
+                for col in range(len(held_shape_grid[row])):
+                    if held_shape_grid[row][col] != None:
+                        pygame.draw.rect(self.screen, held_shape_grid[row][col].color, (
+                            sx - (col+1) * unit_size, sy - (row+1) * unit_size, unit_size, unit_size))
+
+                        # draw borders around the shape
+                        pygame.draw.rect(self.screen, black, (
+                            sx - (col+1) * unit_size, sy - (row+1) * unit_size, unit_size, unit_size), 2)
+
     def render(self):
-        screen.fill(white)
+        screen.fill(black)
 
-        score_text = pygame.font.SysFont('arial', 18)
+        if tetris.state == GameState.PLAYING:
 
-        score_text_display = score_text.render(
-            'Score: {0}'.format(tetris.score), 1, blue)
+            score_text = pygame.font.SysFont('arial', 18)
 
-        level_text_display = score_text.render(
-            'Level : {0}'.format(tetris.level), 1, blue)
+            score_text_display = score_text.render(
+                'Score: {0}'.format(tetris.score), 1, blue)
 
-        screen.blit(score_text_display, (100, 100))
-        screen.blit(level_text_display, (100, 140))
-        grid = self.tetris.grid.get_map()
+            level_text_display = score_text.render(
+                'Level : {0}'.format(tetris.level), 1, blue)
 
-        for row in range(len(grid)):
-            pygame.draw.line(screen, grey, (start_x, start_y + row * unit_size),
-                             (start_x + grid_width, start_y + row * unit_size))
+            pause_game_display = score_text.render(
+                "Press the 'P' to Pause ", 1, blue)
 
-            for col in range(len(grid[row])):
-                pygame.draw.line(screen, grey, (start_x + col * unit_size, start_y),
-                                 (start_x + col * unit_size, start_y + grid_height))
+            screen.blit(pause_game_display, (600, 100))
+            screen.blit(score_text_display, (100, 100))
+            screen.blit(level_text_display, (100, 140))
+            grid = self.tetris.grid.get_map()
 
-                if grid[row][col] != None:
-                    pygame.draw.rect(
-                        screen, grid[row][col].color, (start_x + col * unit_size, start_y + row * unit_size, unit_size, unit_size))
+            for row in range(len(grid)):
+                pygame.draw.line(screen, grey, (start_x, start_y + row * unit_size),
+                                 (start_x + grid_width, start_y + row * unit_size))
 
-        pygame.draw.line(screen, grey, (start_x + grid_width, start_y),
-                         (start_x + grid_width, start_y + grid_height))
-        pygame.draw.line(screen, grey, (start_x, start_y + grid_height),
-                         (start_x + grid_width, start_y + grid_height))
+                for col in range(len(grid[row])):
+                    pygame.draw.line(screen, grey, (start_x + col * unit_size, start_y),
+                                     (start_x + col * unit_size, start_y + grid_height))
+
+                    if grid[row][col] != None:
+                        pygame.draw.rect(
+                            screen, grid[row][col].color, (start_x + col * unit_size, start_y + row * unit_size, unit_size, unit_size))
+
+                        # draw borders around the shape
+                        pygame.draw.rect(
+                            screen, black, (start_x + col * unit_size, start_y + row * unit_size, unit_size, unit_size), 2)
+
+            pygame.draw.line(screen, grey, (start_x + grid_width, start_y),
+                             (start_x + grid_width, start_y + grid_height))
+            pygame.draw.line(screen, grey, (start_x, start_y + grid_height),
+                             (start_x + grid_width, start_y + grid_height))
+
+            self.render_held_shape_grid()
+
+        elif tetris.state == GameState.PAUSE:
+
+            text = pygame.font.SysFont('arial', 50)
+
+            resume_display = text.render(
+                "Press 'R' to resume the game", 1, (white))
+            quit_display = text.render("Press the 'Escape' to Quit", 1, white)
+
+            screen.blit(resume_display, (130, 220))
+            screen.blit(quit_display, (150, 420))
+
+        elif tetris.state == GameState.GAMEOVER:
+            text = pygame.font.SysFont('arial', 50)
+
+            score_text = pygame.font.SysFont('arial', 30)
+
+            score_text_display = score_text.render(
+                'Score: {0}'.format(tetris.score), 1, (white))
+
+            gameover_display = text.render(
+                "Game Over", 1, (white))
+                
+            screen.blit(gameover_display, (330, 220))
+            screen.blit(score_text_display, (330, 3000))
 
         pygame.display.update()
 
