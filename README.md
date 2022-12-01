@@ -16,5 +16,5 @@ poetry run pytest
 
 Run the application
 ```sh
-poetry run python src/tetris.py
+poetry run python src/game.py
 ```
